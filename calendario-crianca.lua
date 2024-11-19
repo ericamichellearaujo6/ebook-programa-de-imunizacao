@@ -33,13 +33,41 @@ function scene:create(event)
      local centerY = display.contentCenterY
  
      -- Adicionar imagem de fundo
-    local bg = display.newImageRect(sceneGroup,"assets/calendario.png", 768, 1024)
+    local bg = display.newImageRect(sceneGroup,"assets/calendario_crianca.png", 768, 1024)
      bg.x = centerX
      bg.y = centerY 
  
 
        -- Carregar o som do botão
        somBotao = audio.loadSound("assets/som.mp3") 
+
+       -- Função para lidar com os botões
+    local function onButtonTap(event)
+        audio.play(somBotao)
+        print("Botão " .. event.target.id .. " pressionado!")
+    end
+
+    -- Posicionar os botões dentro dos quadrados
+    local quadrados = {
+        {x = centerX, y = centerY - 250}, -- Primeiro quadrado (Ao nascer, 2, 3 e 4 meses)
+        {x = centerX, y = centerY - 100}, -- Segundo quadrado (5, 6 e 7 meses)
+        {x = centerX, y = centerY + 50},  -- Terceiro quadrado (9, 12 e 15 meses)
+        {x = centerX, y = centerY + 200}  -- Quarto quadrado (4, 5, 7, 9 e 10 anos)
+    }
+
+    for i = 1, #quadrados do
+        local button = createButton(
+            sceneGroup,
+            "assets/bt_mais.png", 
+            quadrados[i].x,
+            quadrados[i].y,
+            0.5, -- Escala horizontal do botão (ajuste conforme necessário)
+            0.5, -- Escala vertical do botão (ajuste conforme necessário)
+            onButtonTap
+        )
+        button.id = "botao" .. i
+    end
+end
 
     -- Função para voltar para a cena anterior 
     local function onBackTap(event)
@@ -56,13 +84,8 @@ local btVolt = createButton(
     1.0, 
     1.0, 
     onBackTap 
-)
-
-
-
-   
+)  
 end
-
 -- show
 function scene:show(event)
     local sceneGroup = self.view
