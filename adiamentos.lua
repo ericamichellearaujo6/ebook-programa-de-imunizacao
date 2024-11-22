@@ -7,7 +7,6 @@ local scene = composer.newScene()
 -- Variável para armazenar o som
 local somBotao
 
-
 -- Função auxiliar para criar botões
 local function createButton(sceneGroup, imagePath, x, y, scaleX, scaleY, onTap)
     local button = display.newImage(sceneGroup, imagePath)
@@ -20,7 +19,6 @@ local function createButton(sceneGroup, imagePath, x, y, scaleX, scaleY, onTap)
     end
     return button
 end
-
 
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
@@ -35,49 +33,49 @@ function scene:create(event)
     local centerY = display.contentCenterY
 
     -- Adicionar imagem de fundo
-    local bg = display.newImageRect(sceneGroup, "assets/monitoramento.png", 768, 1024)
+    local bg = display.newImageRect(sceneGroup, "assets/info_adiamentos.png", 768, 1024)
     bg.x = centerX
     bg.y = centerY 
 
- 
-     -- Carregar o som
-      somBotao = audio.loadSound("assets/som.mp3") 
+    -- Carregar o som
+    somBotao = audio.loadSound("assets/som.mp3") 
 
-    -- Função para navegar para a próxima pagina
-    local function onNextTap(event)
-        audio.play(somBotao)
-        composer.gotoScene("page5", { effect = "slideLeft", time = 500 })
-    end
-   
-
-    -- Função para voltar para a pagina anterior 
+    -- Função para voltar para a página anterior
     local function onBackTap(event)
         audio.play(somBotao)
-        composer.gotoScene("page3", { effect = "slideRight", time = 500 })
+        composer.gotoScene("page5", { effect = "slideRight", time = 500 })
     end
 
- --add botoes
+    -- Função para exibir a imagem e o botão 'Voltar'
+    local function showImage()
+        -- Criar e exibir a imagem
+        local image = display.newImage(sceneGroup, "assets/explicacao2.png")
+        image.x = display.contentCenterX - 30
+        image.y = display.contentCenterY + 10
+        image.xScale = 1.2
+        image.yScale = 1.2
 
-    -- botão 'Próximo'
-    local btProx = createButton(
-        sceneGroup,
-        "assets/bt-prox.png",
-        display.contentWidth - 70, 
-        display.contentHeight - 55, 
-        0.5, 
-        0.5, 
-        onNextTap 
-    )
+        -- Criar o botão 'Voltar'
+        local btVolt = createButton(
+            sceneGroup,
+            "assets/resposta.png",
+            display.contentWidth - 260,
+            display.contentHeight - 195, 
+            1.2, 
+            1.2, 
+            onBackTap
+        )
+    end
 
-    -- botão 'Voltar'
-    local btVolt = createButton(
+    -- Adicionar botão para mostrar a imagem
+    local btShowRect = createButton(
         sceneGroup,
-        "assets/bt-voltar.png",
-        70, 
-        display.contentHeight - 55, 
-        0.5,
-        0.5, 
-        onBackTap 
+        "assets/resposta2.png",  -- Imagem do botão para exibir a retângulo
+        centerX + 200, 
+        centerY - 250, 
+        1.0, 
+        1.0, 
+        showImage
     )
 
     -- botão 'Ligar Som'
@@ -88,7 +86,7 @@ function scene:create(event)
         display.contentHeight - 55, 
         0.5, 
         0.5, 
-        onSoundOnTap 
+        onSoundOnTap
     )
 
     -- botão 'Desligar Som'
@@ -99,10 +97,8 @@ function scene:create(event)
         display.contentHeight - 55, 
         0.5, 
         0.5, 
-        onSoundOffTap 
+        onSoundOffTap
     )
-
-    
 end
 
 -- show()
@@ -140,9 +136,8 @@ function scene:destroy(event)
     if somBotao then
         audio.stop()
         audio.dispose(somBotao)
-        somBotao= nil
+        somBotao = nil
     end
-   
 end
 
 -- -----------------------------------------------------------------------------------

@@ -39,27 +39,63 @@ function scene:create(event)
     bg.y = centerY
 
  -- Adicionar a imagens dos cartoes (AINDA SEM FUNCIONALIDADES)
-    local cartao1 = display.newImageRect(sceneGroup, "assets/cartaoContra.png", 207, 276)
-    local cartao2 = display.newImageRect(sceneGroup, "assets/cartaoAdia.png", 207, 276)
-    local cartao3 = display.newImageRect(sceneGroup, "assets/cartaoEficacia.png", 207, 276)
-     -- add o scanner
-    local scaner = display.newImageRect(sceneGroup, "assets/scanner.png", 305, 275)
+    local cartao1 = display.newImageRect(sceneGroup, "assets/cartao_contraindicacoes.png", 250, 330)
+    local cartao2 = display.newImageRect(sceneGroup, "assets/cartao_adiamentos.png", 250, 330)
+    local cartao3 = display.newImageRect(sceneGroup, "assets/cartao_eficacia.png", 250, 330)
+     
 
     -- Definir as posições das imagens
     cartao1.x = display.contentCenterX - 250
-    cartao1.y = display.contentCenterY  + 100
+    cartao1.y = display.contentCenterY  + 220
     
     cartao2.x = display.contentCenterX 
-    cartao2.y = display.contentCenterY  + 100
+    cartao2.y = display.contentCenterY  + 220
     
     cartao3.x = display.contentCenterX + 250
-    cartao3.y = display.contentCenterY + 100
-     
-    scaner.x = display.contentCenterX + 250
-    scaner.y = display.contentCenterY + 350
+    cartao3.y = display.contentCenterY + 220
 
-   
-    -- Carregar o som
+     
+
+-- Adicionar os ícones
+local icon1 = createButton(sceneGroup, "assets/icone_contraindicacao.png", centerX - 250, centerY - 5, 0.5, 0.5)
+local icon2 = createButton(sceneGroup, "assets/icone_adiamentos.png", centerX, centerY - 5, 0.5, 0.5)
+local icon3 = createButton(sceneGroup, "assets/icone_eficacia.png", centerX + 250, centerY - 5, 0.5, 0.5)
+  
+-- Função para mover o ícone para o seu respectivo cartão
+local function moveToCard(icon, card,SceneName)
+    if icon and card then
+        print("Movendo ícone para o cartão:", icon, "->", card.x, card.y)
+        transition.to(icon, {
+            time = 500,
+            x = card.x, -- Mover o ícone para a posição X do cartão
+            y = card.y + 65, -- Mover o ícone para a posição Y do cartão
+            transition = easing.inOutQuad,
+            onComplete = function()
+                print("indo pra cena: " .. SceneName)
+            composer.gotoScene(SceneName, { effect = "fade", time = 500 })
+            end  
+        })
+    else
+        print("Erro: Ícone ou cartão não encontrado.")
+    end
+end  
+
+-- Adicionar eventos de toque nos ícones
+icon1:addEventListener("tap", function()
+    print("Ícone 1 tocado")
+    moveToCard(icon1, cartao1,"contraindicacoes") -- Mover ícone1 para cartao1
+end)
+
+icon2:addEventListener("tap", function()
+    print("Ícone 2 tocado")
+    moveToCard(icon2, cartao2,"adiamentos") -- Mover ícone2 para cartao2
+end)
+
+icon3:addEventListener("tap", function()
+    print("Ícone 3 tocado")
+    moveToCard(icon3, cartao3,"eficacia") -- Mover ícone3 para cartao3
+end)
+
      somBotao = audio.loadSound("assets/som.mp3") 
 
     -- Função para navegar para a próxima pagina

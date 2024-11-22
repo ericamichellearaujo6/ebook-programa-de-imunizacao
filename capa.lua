@@ -58,6 +58,25 @@ function scene:create(event)
     onNextTap 
 )
 
+local btSomL = createButton(
+    sceneGroup,
+    "assets/som-ligar.png",
+    display.contentWidth - 530,
+    display.contentHeight - 55,
+    0.5,
+    0.5,
+    onSoundOnTap
+)
+
+local btSomD = createButton(
+    sceneGroup,
+    "assets/som-desliga.png",
+    display.contentWidth - 220,
+    display.contentHeight - 55,
+    0.5,
+    0.5,
+    onSoundOffTap
+)
 
    
 end
