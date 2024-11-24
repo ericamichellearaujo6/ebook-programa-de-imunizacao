@@ -5,6 +5,8 @@ local scene = composer.newScene()
 -- Variável para armazenar o som
 local somBotao
 local somColisao
+local somProx
+
 -- Inicializando as tabelas virus e bacterias
 local virus = {}
 local bacterias = {}
@@ -173,18 +175,20 @@ function scene:create(event)
     end
 
     -- Carregar o som do botão e colisão
-    somBotao = audio.loadSound("assets/som.mp3")
+    --somBotao = audio.loadSound("assets/som.mp3")
     somColisao = audio.loadSound("assets/somDestruir.mp3")
+    somProx = audio.loadSound("assets/proximo.mp3")
+    SomVolt = audio.loadSound("assets/anterior.mp3")
 
     -- Função para navegar para a próxima página
     local function onNextTap(event)
-        audio.play(somBotao)
-        composer.gotoScene("page3", { effect = "slideLeft", time = 500 })
+        audio.play(somProx)
+        composer.gotoScene("page2", { effect = "slideLeft", time = 500 })
     end
 
     -- Função para navegar para a página anterior
     local function onBackTap(event)
-        audio.play(somBotao)
+        audio.play(SomVolt)
         composer.gotoScene("capa", { effect = "slideRight", time = 500 })
     end
 

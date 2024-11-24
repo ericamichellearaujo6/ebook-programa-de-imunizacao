@@ -6,6 +6,9 @@ local scene = composer.newScene()
 
 -- Variável para armazenar o som
 local somBotao
+local somProx
+local SomVolt
+
 
 -- Função auxiliar para criar botões
 local function createButton(sceneGroup, imagePath, x, y, scaleX, scaleY, onTap)
@@ -20,6 +23,7 @@ local function createButton(sceneGroup, imagePath, x, y, scaleX, scaleY, onTap)
     return button
 end
 
+
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
 -- -----------------------------------------------------------------------------------
@@ -33,26 +37,30 @@ function scene:create(event)
     local centerY = display.contentCenterY
 
     -- Adicionar imagem de fundo
-    local bg = display.newImageRect(sceneGroup, "assets/vacinacao.png", 768, 1024)
+    local bg = display.newImageRect(sceneGroup, "assets/monitoramento.png", 768, 1024)
     bg.x = centerX
     bg.y = centerY 
 
-    -- Carregar o som do botão
-    somBotao = audio.loadSound("assets/som.mp3") 
+ 
+     -- Carregar o som
+      --somBotao = audio.loadSound("assets/som.mp3") 
+       somProx = audio.loadSound("assets/proximo.mp3")
+       SomVolt = audio.loadSound("assets/anterior.mp3")
 
-    -- Função para navegar para a próxima pagina 
+    -- Função para navegar para a próxima pagina
     local function onNextTap(event)
-        audio.play(somBotao)
+        audio.play(somProx)
         composer.gotoScene("page4", { effect = "slideLeft", time = 500 })
     end
+   
 
     -- Função para voltar para a pagina anterior 
     local function onBackTap(event)
-        audio.play(somBotao)
-        composer.gotoScene("page1", { effect = "slideRight", time = 500 })
+        audio.play(SomVolt)
+        composer.gotoScene("page2", { effect = "slideRight", time = 500 })
     end
 
-    -- Adicionando os botões
+ --add botoes
 
     -- botão 'Próximo'
     local btProx = createButton(
@@ -71,7 +79,7 @@ function scene:create(event)
         "assets/bt-voltar.png",
         70, 
         display.contentHeight - 55, 
-        0.5, 
+        0.5,
         0.5, 
         onBackTap 
     )
@@ -98,46 +106,7 @@ function scene:create(event)
         onSoundOffTap 
     )
 
-    -- Adicionar os botões novos
-    local NewButtons = 4
-    local espacoEntreBotoes = 90
-    local deslocamentoEsquerda = 50 
-
-    -- Lista de imagens dos novos botões
-    local newButtonImages = {
-        "assets/bebe.png",
-        "assets/adolescente.png",
-        "assets/adulto_e_idoso.png",
-        "assets/gestante.png"
-    }
-
-    -- Definir a escala 
-    local scaleFactor = 0.9 
-
-    local newButtons = {}
-
-    for i = 1, NewButtons do
-        newButtons[i] = createButton(
-            sceneGroup,
-            newButtonImages[i],
-            (150 + ((i - 1) * (100 + espacoEntreBotoes))) - deslocamentoEsquerda,
-            display.contentHeight - 255, 
-            scaleFactor, 
-            scaleFactor,
-            function()
-                -- Direcionar para a pagina correspondente
-                if i == 1 then
-                    composer.gotoScene("calendario-crianca") -- Para o botão bebe
-                elseif i == 2 then
-                    composer.gotoScene("calendario-adolescente") -- Para o botão adolescente
-                elseif i == 3 then
-                    composer.gotoScene("calendario-adultoEidoso") -- Para o botão adulto_e_idoso
-                elseif i == 4 then
-                    composer.gotoScene("calendario-gestante") -- Para o botão gestante
-                end
-            end
-        )
-    end
+    
 end
 
 -- show()
@@ -171,12 +140,13 @@ end
 -- destroy()
 function scene:destroy(event)
     local sceneGroup = self.view
-    
+
     if somBotao then
         audio.stop()
         audio.dispose(somBotao)
-        somBotao = nil
+        somBotao= nil
     end
+   
 end
 
 -- -----------------------------------------------------------------------------------

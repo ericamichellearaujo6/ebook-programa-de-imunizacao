@@ -4,7 +4,6 @@ local scene = composer.newScene()
 
 -- Variável global para o som
 local somBotao
-local somProx
 
 
 -- Função auxiliar para criar botões
@@ -20,7 +19,7 @@ local function createButton(sceneGroup, imagePath, x, y, scaleX, scaleY, onTap)
     return button
 end
 
--- -----------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
 -- Configurações da página
 -- -----------------------------------------------------------------------------------
 
@@ -34,56 +33,34 @@ function scene:create(event)
      local centerY = display.contentCenterY
  
      -- Adicionar imagem de fundo
-     local bg = display.newImageRect(sceneGroup, "assets/capa.png", 768, 1024)
+    local bg = display.newImageRect(sceneGroup,"assets/mitos-e-verdades-final.png", 768, 1024)
      bg.x = centerX
      bg.y = centerY 
  
 
-       -- Carregar o som do botão
-       somBotao = audio.loadSound("assets/som.mp3") 
-
-     -- Carregar o som do botão
-        somProx = audio.loadSound("assets/proximo.mp3") 
-
-    -- Função para navegar para a próxima pagina
-    local function onNextTap(event)
-        audio.play(somProx)
-        composer.gotoScene("page1", { effect = "fade", time = 800 })
-    end
-
-   -- botão 'Próximo'
-   local btProx = createButton(
-    sceneGroup,
-    "assets/bt-prox.png",
-    display.contentWidth - 70, 
-    display.contentHeight - 55, 
-    0.5, 
-    0.5, 
-    onNextTap 
-)
-
-local btSomL = createButton(
-    sceneGroup,
-    "assets/som-ligar.png",
-    display.contentWidth - 530,
-    display.contentHeight - 55,
-    0.5,
-    0.5,
-    onSoundOnTap
-)
-
-local btSomD = createButton(
-    sceneGroup,
-    "assets/som-desliga.png",
-    display.contentWidth - 220,
-    display.contentHeight - 55,
-    0.5,
-    0.5,
-    onSoundOffTap
-)
-
-   
+-- Função para voltar para a cena anterior 
+local function onBackTap(event)
+    audio.play(somBotao)
+    composer.gotoScene("page3", { effect = "slideRight", time = 500 })
 end
+
+
+-- Adicionar botão 'Voltar'
+local btVolt = createButton(
+    sceneGroup,
+    "assets/voltar.png",
+    670, 
+    display.contentHeight - 980, 
+    1.0, 
+    1.0, 
+    onBackTap 
+)  
+end
+
+ -- Carregar o som do botão
+ somBotao = audio.loadSound("assets/som.mp3") 
+
+
 
 -- show
 function scene:show(event)

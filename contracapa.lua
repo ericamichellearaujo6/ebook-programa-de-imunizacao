@@ -4,6 +4,8 @@ local scene = composer.newScene()
 
 -- Variável global para o som
 local somBotao
+local somProx -- RENOMEAR PARA HOME
+local SomVolt 
 
 
 -- Função auxiliar para criar botões
@@ -40,16 +42,18 @@ function scene:create(event)
 
        -- Carregar o som do botão
        somBotao = audio.loadSound("assets/som.mp3") 
+       somProx = audio.loadSound("assets/proximo.mp3") -- RENOMEAR PARA HOME
+       SomVolt = audio.loadSound("assets/anterior.mp3")
 
     -- Função para navegar para a pagina incicial
     local function onNextTap(event)
-        audio.play(somBotao)
+        audio.play(somProx)
         composer.gotoScene("capa", { effect = "zoomInOut", time = 500 })
     end
 
      -- Função para navegar para a pagina anterior 
     local function onBackTap(event)
-        audio.play(somBotao)
+        audio.play(SomVolt)
         composer.gotoScene("referencias", { effect = "slideRight", time = 500 })
     end
      

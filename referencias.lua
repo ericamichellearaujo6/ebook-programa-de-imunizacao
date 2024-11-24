@@ -3,7 +3,8 @@ local composer = require("composer")
 local scene = composer.newScene()
 
 -- Variável global para o som
-local somBotao
+local somProx
+local SomVolt
 
 
 -- Função auxiliar para criar botões
@@ -39,18 +40,19 @@ function scene:create(event)
  
 
        -- Carregar o som do botão
-       somBotao = audio.loadSound("assets/som.mp3") 
+       somProx = audio.loadSound("assets/proximo.mp3") 
+       SomVolt = audio.loadSound("assets/anterior.mp3")
 
     -- Função para navegar para a próxima pagina
     local function onNextTap(event)
-        audio.play(somBotao)
+        audio.play(somProx)
         composer.gotoScene("contracapa", { effect = "slideLeft", time = 500 })
     end
 
      -- Função para navegar para a pagina anterior 
     local function onBackTap(event)
-        audio.play(somBotao)
-        composer.gotoScene("page7", { effect = "slideRight", time = 500 })
+        audio.play(SomVolt)
+        composer.gotoScene("page5", { effect = "slideRight", time = 500 })
     end
      
 ------- add botoes
