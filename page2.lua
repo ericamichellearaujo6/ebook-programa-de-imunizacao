@@ -4,10 +4,15 @@ local composer = require("composer")
 -- Cria uma nova cena
 local scene = composer.newScene()
 
+local btSomL
+local btSomD
+
 -- Variável para armazenar o som
-local somBotao
 local  somProx
 local SomVolt
+local audioPage2
+local canal2
+
 
 -- Função auxiliar para criar botões
 local function createButton(sceneGroup, imagePath, x, y, scaleX, scaleY, onTap)
@@ -40,9 +45,10 @@ function scene:create(event)
     bg.y = centerY 
 
     -- Carregar o som do botão
-    somBotao = audio.loadSound("assets/som.mp3") 
+    
     somProx = audio.loadSound("assets/proximo.mp3")
     SomVolt = audio.loadSound("assets/anterior.mp3")
+    audioPage2 =  audio.loadSound("assets/page2.mp3")
 
     -- Função para navegar para a próxima pagina 
     local function onNextTap(event)
@@ -56,6 +62,29 @@ function scene:create(event)
         composer.gotoScene("page1", { effect = "slideRight", time = 500 })
     end
 
+   -- função para ligar o som 
+   local function onSoundOnTap(event)
+    print("Ligando o som...")
+   if  not canal2 then 
+      canal2 = audio.play(audioPage2, { loops = -1 })  -- Reproduz som em loop
+      print("Som ligado no canal: ", canal2)
+   end
+    btSomL.isVisible = false -- Esconde o botão "Ligar som"
+    btSomD.isVisible = true -- Mostra o botão "Desligar som"
+end
+
+ -- função para desligar o som
+local function onSoundOffTap(event)
+    print("Desligando o som...")
+  if canal2 then
+    print("Som está ligado, desligando agora...")  
+    audio.stop(canal2);
+    canal2 = nil 
+    print("Som desligado.")
+  end
+    btSomD.isVisible = false -- Esconde o botão "Desligar som"
+    btSomL.isVisible = true -- Mostra o botão "Ligar som"
+end
     -- Adicionando os botões
 
     -- botão 'Próximo'
@@ -81,7 +110,7 @@ function scene:create(event)
     )
 
     -- botão 'Ligar Som'
-    local btSomL = createButton(
+     btSomL = createButton(
         sceneGroup,
         "assets/som-ligar.png",
         display.contentWidth - 530,
@@ -90,9 +119,10 @@ function scene:create(event)
         0.5, 
         onSoundOnTap 
     )
+    btSomL.isVisible = false --começa invisivel 
 
     -- botão 'Desligar Som'
-    local btSomD = createButton(
+     btSomD = createButton(
         sceneGroup,
         "assets/som-desliga.png",
         display.contentWidth - 220,
@@ -101,6 +131,7 @@ function scene:create(event)
         0.5, 
         onSoundOffTap 
     )
+    btSomD.isVisible = true
 
     -- Adicionar os botões novos
     local NewButtons = 4
@@ -119,7 +150,7 @@ function scene:create(event)
     local scaleFactor = 0.9 
 
     local newButtons = {}
-
+     somBotao = audio.loadSound("assets/som.mp3");
     for i = 1, NewButtons do
         newButtons[i] = createButton(
             sceneGroup,
@@ -129,6 +160,13 @@ function scene:create(event)
             scaleFactor, 
             scaleFactor,
             function()
+              audio.play(somBotao);
+                --para o audio quado ofor pressionado o bt do calendario
+                if canal2 then
+                    audio.pause(canal2);
+                end
+                btSomL.isVisible = true  -- Torna o botão "Ligar som" visível
+                btSomD.isVisible = false
                 -- Direcionar para a pagina correspondente
                 if i == 1 then
                     composer.gotoScene("calendario-crianca") -- Para o botão bebe
@@ -142,6 +180,9 @@ function scene:create(event)
             end
         )
     end
+
+     -- Reproduzir o som automaticamente ao carregar a cena
+     canal2 = audio.play(audioPage2, { loops = -1 })  
 end
 
 -- show()
@@ -150,11 +191,9 @@ function scene:show(event)
     local phase = event.phase
 
     if (phase == "will") then
-        -- Código aqui é executado quando a cena está prestes a aparecer na tela
-
-    elseif (phase == "did") then
-        -- Código aqui é executado quando a cena já está na tela
-
+       if not canal2 then
+        canal2 = audio.play(audioPage2, { loops = -1 }) -- Reproduz o som em loop
+       end
     end
 end
 
@@ -164,11 +203,10 @@ function scene:hide(event)
     local phase = event.phase
 
     if (phase == "will") then
-        -- Código aqui é executado quando a cena está prestes a sair da tela
-
-    elseif (phase == "did") then
-        -- Código aqui é executado imediatamente após a cena sair da tela
-
+      if canal2 then
+        audio.stop(canal2);
+        canal2 = nil
+      end 
     end
 end
 
@@ -180,6 +218,15 @@ function scene:destroy(event)
         audio.stop()
         audio.dispose(somBotao)
         somBotao = nil
+    end
+    if audioPage2 then
+        if canal2 then
+            audio.stop(canal2)
+            audio.dispose(canal2)
+            canal2 = nil
+        end
+        audio.dispose(audioPage2)
+        audioPage2 = nil
     end
 end
 

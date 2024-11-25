@@ -4,10 +4,15 @@ local composer = require("composer")
 -- Cria uma nova cena
 local scene = composer.newScene()
 
+local btSomL
+local btSomD
+
 -- Variável para armazenar o som
 local somBotao
 local somProx
 local SomVolt
+local audioPage4
+local canal4
 
 
 -- Função auxiliar para criar botões
@@ -101,6 +106,7 @@ end)
      somBotao = audio.loadSound("assets/som.mp3") 
      somProx = audio.loadSound("assets/proximo.mp3")
      SomVolt = audio.loadSound("assets/anterior.mp3")
+     audioPage4 = audio.loadSound("assets/page4.mp3")
 
     -- Função para navegar para a próxima pagina
     local function onNextTap(event)
@@ -114,7 +120,29 @@ end)
         composer.gotoScene("page3", { effect = "slideRight", time = 500 })
     end
      
+-- função para ligar o som 
+local function onSoundOnTap(event)
+    print("Ligando o som...")
+   if  not canal4 then 
+      canal4 = audio.play(audioPage4, { loops = -1 })  -- Reproduz som em loop
+      print("Som ligado no canal: ", canal4)
+   end
+    btSomL.isVisible = false -- Esconde o botão "Ligar som"
+    btSomD.isVisible = true -- Mostra o botão "Desligar som"
+end
 
+ -- função para desligar o som
+local function onSoundOffTap(event)
+    print("Desligando o som...")
+  if canal4 then
+    print("Som está ligado, desligando agora...")  
+    audio.stop(canal4);
+    canal4 = nil 
+    print("Som desligado.")
+  end
+    btSomD.isVisible = false -- Esconde o botão "Desligar som"
+    btSomL.isVisible = true -- Mostra o botão "Ligar som"
+end
     --- add os botoes -----
 
     -- botão 'Próximo'
@@ -140,7 +168,7 @@ end)
     )
 
     --botão 'Ligar Som'
-    local btSomL = createButton(
+    btSomL = createButton(
         sceneGroup,
         "assets/som-ligar.png",
         display.contentWidth - 530, 
@@ -149,9 +177,11 @@ end)
         0.5, 
         onSoundOnTap 
     )
+    btSomL.isVisible = false --começa invisivel 
+
 
     -- Adicionar botão 'Desligar Som'
-    local btSomD = createButton(
+     btSomD = createButton(
         sceneGroup,
         "assets/som-desliga.png",
         display.contentWidth - 220, 
@@ -160,6 +190,7 @@ end)
         0.5,
         onSoundOffTap 
     )
+    btSomD.isVisible = true
 
     
 end
@@ -170,11 +201,9 @@ function scene:show(event)
     local phase = event.phase
 
     if (phase == "will") then
-        -- Código aqui é executado quando a cena está prestes a aparecer na tela
-
-    elseif (phase == "did") then
-        -- Código aqui é executado quando a cena já está na tela
-
+        if not canal4 then
+            canal4 = audio.play(audioPage4, { loops = -1 }) -- Reproduz o som em loop
+           end
     end
 end
 
@@ -184,11 +213,10 @@ function scene:hide(event)
     local phase = event.phase
 
     if (phase == "will") then
-        -- Código aqui é executado quando a cena está prestes a sair da tela
-
-    elseif (phase == "did") then
-        -- Código aqui é executado imediatamente após a cena sair da tela
-
+        if canal4 then
+            audio.stop(canal4);
+            canal4 = nil
+          end 
     end
 end
 
@@ -201,6 +229,15 @@ function scene:destroy(event)
      audio.dispose(somBotao)
      somBotao= nil
   end
+  if audioPage4 then
+    if canal4 then
+        audio.stop(canal4)
+        audio.dispose(canal4)
+        canal4 = nil
+    end
+    audio.dispose(audioPage4)
+    audioPage4 = nil
+end
 end
 
 -- -----------------------------------------------------------------------------------

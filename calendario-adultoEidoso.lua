@@ -44,7 +44,7 @@ function scene:create(event)
     -- Função para voltar para a cena anterior 
     local function onBackTap(event)
         audio.play(somBotao)
-        composer.gotoScene("page3", { effect = "slideRight", time = 500 })
+        composer.gotoScene("page2", { effect = "slideRight", time = 500 })
     end
       -- Função para navegar para a continuação da  pagina
       local function onContinueTap(event)

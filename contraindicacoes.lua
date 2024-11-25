@@ -43,7 +43,7 @@ function scene:create(event)
     -- Função para voltar para a página anterior
     local function onBackTap(event)
         audio.play(somBotao)
-        composer.gotoScene("page5", { effect = "slideRight", time = 500 })
+        composer.gotoScene("page4", { effect = "slideRight", time = 500 })
     end
 
     -- Função para exibir a imagem e o botão 'Voltar'

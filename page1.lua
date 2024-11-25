@@ -2,15 +2,26 @@
 local composer = require("composer")
 local scene = composer.newScene()
 
+
+ local btSomL = nil
+ local btSomD = nil
+    
 -- Variável para armazenar o som
-local somBotao
 local somColisao
 local somProx
+local SomVolt
+local audioPage1
+local canal1
+
+
 
 -- Inicializando as tabelas virus e bacterias
 local virus = {}
 local bacterias = {}
 
+
+
+ 
 -- Função auxiliar para criar botões
 local function createButton(sceneGroup, imagePath, x, y, scaleX, scaleY, onTap)
     local button = display.newImage(sceneGroup, imagePath)
@@ -23,17 +34,18 @@ local function createButton(sceneGroup, imagePath, x, y, scaleX, scaleY, onTap)
     end
     return button
 end
--- Função para fazer objetos flutuarem
+
+-- Função para fazer virus e bacterias  flutuarem
 local function flutuar(objeto)
     transition.to(objeto, {
-        y = objeto.y - 20, -- Move para cima 20 pixels
-        time = 1000, -- Tempo de 1 segundo
-        transition = easing.inOutSine, -- Animação suave
+        y = objeto.y - 20, -- Move para cima 
+        time = 1000, -- Tempo 
+        transition = easing.inOutSine, -- Animação 
         onComplete = function()
             transition.to(objeto, {
-                y = objeto.y + 20, -- Move para baixo 20 pixels
-                time = 1000, -- Tempo de 1 segundo
-                transition = easing.inOutSine, -- Animação suave
+                y = objeto.y + 20, -- Move para baixo 
+                time = 1000, -- Tempo 
+                transition = easing.inOutSine, -- Animação 
                 onComplete = function()
                     -- Chama a função novamente para continuar flutuando
                     flutuar(objeto)
@@ -60,11 +72,22 @@ local function verColisao(obj1, obj2)
     end
 end
 
+
+ --carregando sons
+ somColisao = audio.loadSound("assets/somDestruir.mp3")
+ somProx = audio.loadSound("assets/proximo.mp3")
+ SomVolt = audio.loadSound("assets/anterior.mp3")
+ audioPage1 = audio.loadSound("assets/page1.mp3")
+
+ 
+
 function scene:create(event)
     local sceneGroup = self.view
     local centerX = display.contentCenterX
     local centerY = display.contentCenterY
 
+    
+ 
     -- Adicionar imagem de fundo
     local bg = display.newImageRect(sceneGroup, "assets/introducao.png", 768, 1024)
     bg.x = centerX
@@ -76,9 +99,24 @@ function scene:create(event)
     zeGotinha.y = display.contentHeight - 200
     zeGotinha:scale(2.5, 2.5)
 
+    
+
     -- Função para arrastar o Zé Gotinha
     local function arrastarImagem(event)
+        
+        
         if event.phase == "began" then
+
+            
+            -- condição para parar o som e deixar o btSomL visivel
+            if canal1 then
+                audio.stop(canal1)
+                canal1 = nil
+            end
+           btSomL.isVisible = true
+           btSomD.isVisible = false
+
+
             display.getCurrentStage():setFocus(zeGotinha)
             zeGotinha.isFocus = true
             zeGotinha.offsetX = event.x - zeGotinha.x
@@ -88,7 +126,6 @@ function scene:create(event)
             zeGotinha.x = event.x - zeGotinha.offsetX
             zeGotinha.y = event.y - zeGotinha.offsetY
             print("Movendo Zé Gotinha para:", zeGotinha.x, zeGotinha.y)
-            -- Verificar quando ele se move
 
             -- Verificar colisão com os vírus
             for i = 1, #virus do
@@ -133,6 +170,8 @@ function scene:create(event)
         elseif event.phase == "ended" or event.phase == "cancelled" then
             display.getCurrentStage():setFocus(nil)
             zeGotinha.isFocus = false
+
+            
         end
         return true
     end
@@ -174,22 +213,51 @@ function scene:create(event)
         flutuar(bacterias[i])  -- Chama a função para fazer a bactéria flutuar
     end
 
-    -- Carregar o som do botão e colisão
-    --somBotao = audio.loadSound("assets/som.mp3")
-    somColisao = audio.loadSound("assets/somDestruir.mp3")
-    somProx = audio.loadSound("assets/proximo.mp3")
-    SomVolt = audio.loadSound("assets/anterior.mp3")
+    
 
+   
+
+    
     -- Função para navegar para a próxima página
     local function onNextTap(event)
+         if canal1 then 
+          audio.stop(canal1);
+        end
         audio.play(somProx)
         composer.gotoScene("page2", { effect = "slideLeft", time = 500 })
     end
 
     -- Função para navegar para a página anterior
     local function onBackTap(event)
+        if canal1 then 
+            audio.stop(canal1);
+        end
         audio.play(SomVolt)
         composer.gotoScene("capa", { effect = "slideRight", time = 500 })
+    end
+
+    -- função para ligar o som 
+    local function onSoundOnTap(event)
+        print("Ligando o som...")
+       if  not canal1 then 
+        canal1 = audio.play(audioPage1, { loops = -1 })  -- Reproduz som em loop
+        print("Som ligado no canal: ", canal1)
+       end
+        btSomL.isVisible = false -- Esconde o botão "Ligar som"
+        btSomD.isVisible = true -- Mostra o botão "Desligar som"
+    end
+
+     -- função para desligar o som
+    local function onSoundOffTap(event)
+        print("Desligando o som...")
+      if canal1 then
+        print("Som está ligado, desligando agora...")  
+        audio.stop(canal1);
+        canal1 = nil 
+        print("Som desligado.")
+      end
+        btSomD.isVisible = false -- Esconde o botão "Desligar som"
+        btSomL.isVisible = true -- Mostra o botão "Ligar som"
     end
 
     -- Criação dos botões de navegação e som
@@ -203,7 +271,7 @@ function scene:create(event)
         onNextTap
     )
 
-    local btVolt = createButton(
+     local btVolt = createButton(
         sceneGroup,
         "assets/bt-voltar.png",
         70,
@@ -213,7 +281,7 @@ function scene:create(event)
         onBackTap
     )
 
-    local btSomL = createButton(
+     btSomL = createButton(
         sceneGroup,
         "assets/som-ligar.png",
         display.contentWidth - 530,
@@ -222,8 +290,9 @@ function scene:create(event)
         0.5,
         onSoundOnTap
     )
+    btSomL.isVisible = false -- Começa invisível
 
-    local btSomD = createButton(
+     btSomD = createButton(
         sceneGroup,
         "assets/som-desliga.png",
         display.contentWidth - 220,
@@ -232,24 +301,35 @@ function scene:create(event)
         0.5,
         onSoundOffTap
     )
+    btSomD.isVisible = true
+
 end
 
 -- Funções show, hide e destroy
 function scene:show(event)
+    local sceneGroup = self.view
     local phase = event.phase
+
     if phase == "did" then
-        -- Quando a cena se torna visível
+         if not canal1 then
+          canal1 = audio.play(audioPage1, { loops = -1 }) -- Reproduz o som em loop
+         end
     end
 end
 
 function scene:hide(event)
     local phase = event.phase
-    if phase == "did" then
-        -- Quando a cena sai da tela
+
+    if phase == "did" then 
+        if canal1 then
+      audio.stop(canal1)
+        canal1 = nil
+       end
     end
 end
 
 function scene:destroy(event)
+
     if somBotao then
         audio.dispose(somBotao)
         somBotao = nil
@@ -257,6 +337,16 @@ function scene:destroy(event)
     if somColisao then
         audio.dispose(somColisao)
         somColisao = nil
+    end
+    
+    if audioPage1 then
+        if canal1 then
+            audio.stop(canal1)
+            audio.dispose(canal1)
+            canal1 = nil
+        end
+        audio.dispose(audioPage1)
+        audioPage1 = nil
     end
 end
 
