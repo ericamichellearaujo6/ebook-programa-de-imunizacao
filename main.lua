@@ -5,5 +5,5 @@ display.setStatusBar(display.HiddenStatusBar);
 
 math.randomseed(os.time());
 
-composer.gotoScene('page3');
+composer.gotoScene('capa');
 
