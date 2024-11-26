@@ -8,8 +8,7 @@ local btSomL
 local btSomD
 
 -- Variável para armazenar o som
-local  somProx
-local SomVolt
+local  btSom
 local audioPage2
 local canal2
 
@@ -46,19 +45,18 @@ function scene:create(event)
 
     -- Carregar o som do botão
     
-    somProx = audio.loadSound("assets/proximo.mp3")
-    SomVolt = audio.loadSound("assets/anterior.mp3")
+    btSom = audio.loadSound("assets/som.mp3")
     audioPage2 =  audio.loadSound("assets/page2.mp3")
 
     -- Função para navegar para a próxima pagina 
     local function onNextTap(event)
-        audio.play(somProx)
+        audio.play(btSom)
         composer.gotoScene("page3", { effect = "slideLeft", time = 500 })
     end
 
     -- Função para voltar para a pagina anterior 
     local function onBackTap(event)
-        audio.play(SomVolt)
+        audio.play(btSom)
         composer.gotoScene("page1", { effect = "slideRight", time = 500 })
     end
 
@@ -214,10 +212,10 @@ end
 function scene:destroy(event)
     local sceneGroup = self.view
     
-    if somBotao then
+    if btSom then
         audio.stop()
-        audio.dispose(somBotao)
-        somBotao = nil
+        audio.dispose(btSom)
+        btSom = nil
     end
     if audioPage2 then
         if canal2 then

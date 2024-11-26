@@ -4,7 +4,7 @@ local scene = composer.newScene()
 
 -- Variável global para o som
 
-local somProx
+local btSom
 local audioCapa
 local canalAudio
 local btSomL
@@ -29,7 +29,7 @@ end
 --carregar o som do audio
 somCapa = audio.loadSound("assets/capa.mp3")
  -- Carregar o som do botão proximo 
- somProx = audio.loadSound("assets/proximo.mp3") 
+ btSom = audio.loadSound("assets/som.mp3") 
 
 -- -----------------------------------------------------------------------------------
 -- Configurações da página
@@ -57,7 +57,7 @@ function scene:create(event)
             audio.stop(canalAudio)
             --canalAudio = nil
         end  
-        audio.play(somProx)
+        audio.play(btSom)
         composer.gotoScene("page1", { effect = "fade", time = 800 })
     end
 
@@ -152,9 +152,9 @@ function scene:destroy(event)
     end
 
     -- Libere o som ao destruir a cena
-    if somProx then
-        audio.dispose(somProx)
-        somProx = nil
+    if btSom then
+        audio.dispose(btSom)
+        btSom = nil
     end
     
     

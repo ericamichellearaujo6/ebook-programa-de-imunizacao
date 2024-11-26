@@ -4,10 +4,13 @@ local composer = require("composer")
 -- Cria uma nova cena
 local scene = composer.newScene()
 
+local btSomL
+local btSomD
+
 -- Variável para armazenar o som
-local somBotao
-local somProx
-local SomVolt
+local btSom 
+local audioPage5
+local canal5
 
 -- Função auxiliar para criar botões
 local function createButton(sceneGroup, imagePath, x, y, scaleX, scaleY, onTap)
@@ -46,23 +49,45 @@ function scene:create(event)
      cel.y = display.contentCenterY  + 290
 
     -- Carregar o som do botão proximo
-     somBotao = audio.loadSound("assets/som.mp3")
-     somProx = audio.loadSound("assets/proximo.mp3")
-     SomVolt = audio.loadSound("assets/anterior.mp3")
+      btSom = audio.loadSound("assets/som.mp3")
+     audioPage5 = audio.loadSound("assets/page5.mp3")
 
     -- Função para navegar para a próxima pagina
     local function onNextTap(event)
-        audio.play(somProx)
+        audio.play(btSom)
         composer.gotoScene("referencias", { effect = "slideLeft", time = 500 })
     end
     
-    
+
     -- Função para navegar para a pagina anterior 
     local function onBackTap(event)
-        audio.play(SomVolt)
+        audio.play(btSom)
         composer.gotoScene("page4", { effect = "slideRight", time = 500 })
     end
 
+    -- função para ligar o som 
+local function onSoundOnTap(event)
+    print("Ligando o som...")
+   if  not canal5 then 
+      canal5 = audio.play(audioPage5, { loops = -1 })  -- Reproduz som em loop
+      print("Som ligado no canal: ", canal5)
+   end
+    btSomL.isVisible = false -- Esconde o botão "Ligar som"
+    btSomD.isVisible = true -- Mostra o botão "Desligar som"
+end
+
+ -- função para desligar o som
+local function onSoundOffTap(event)
+    print("Desligando o som...")
+  if canal5 then
+    print("Som está ligado, desligando agora...")  
+    audio.stop(canal5);
+    canal5 = nil 
+    print("Som desligado.")
+  end
+    btSomD.isVisible = false -- Esconde o botão "Desligar som"
+    btSomL.isVisible = true -- Mostra o botão "Ligar som"
+end
     -- add botoes
 
     --  botão 'Próximo'
@@ -88,7 +113,7 @@ function scene:create(event)
     )
 
     -- botão 'Ligar Som'
-    local btSomL = createButton(
+     btSomL = createButton(
         sceneGroup,
         "assets/som-ligar.png",
         display.contentWidth - 530, 
@@ -97,9 +122,10 @@ function scene:create(event)
         0.5, 
         onSoundOnTap 
     )
+    btSomL.isVisible = false
 
     -- botão 'Desligar Som'
-    local btSomD = createButton(
+     btSomD = createButton(
         sceneGroup,
         "assets/som-desliga.png",
         display.contentWidth - 220, 
@@ -108,6 +134,7 @@ function scene:create(event)
         0.5,
         onSoundOffTap 
     )
+    btSomD.isVisible = true
 
 end
 
@@ -117,10 +144,11 @@ function scene:show(event)
     local phase = event.phase
 
     if (phase == "will") then
-        -- Código aqui é executado quando a cena está prestes a aparecer na tela
+        if not canal5 then
+            canal5 =  audio.play(audioPage5, { loops = -1 }) -- Reproduz o som em loop 
+           end
 
     elseif (phase == "did") then
-        -- Código aqui é executado quando a cena já está na tela
 
         local balanco = 1.5 --limite de aceleração
         local function movimentar(event)
@@ -145,21 +173,32 @@ function scene:hide(event)
     local phase = event.phase
 
     if (phase == "will") then
-        -- Código aqui é executado quando a cena está prestes a sair da tela
-
-    elseif (phase == "did") then
-        -- Código aqui é executado imediatamente após a cena sair da tela
-
+        if canal5 then
+            audio.stop(canal5)
+            canal5 = nil
+        end
+        btSomL.isVisible = false
+        btSomD.isVisible = true
     end
 end
 
 -- destroy()
 function scene:destroy(event)
     local sceneGroup = self.view
-    if somBotao then
+
+    if btSom then
         audio.stop()
-        audio.dispose(somBotao)
-        somBotao= nil
+        audio.dispose(btSom)
+        btSom= nil
+    end
+
+    if audioPage5 then
+        if canal5 then
+            audio.stop(canal5)
+            canal5 = nil
+        end
+        audio.dispose(audioPage5)
+        audioPage5 = nil
     end
   
 end

@@ -8,9 +8,7 @@ local btSomL
 local btSomD
 
 -- Variável para armazenar o som
-local somBotao
-local somProx
-local SomVolt
+local btSom
 local audioPage4
 local canal4
 
@@ -103,20 +101,18 @@ icon3:addEventListener("tap", function()
     moveToCard(icon3, cartao3,"eficacia") -- Mover ícone3 para cartao3
 end)
 
-     somBotao = audio.loadSound("assets/som.mp3") 
-     somProx = audio.loadSound("assets/proximo.mp3")
-     SomVolt = audio.loadSound("assets/anterior.mp3")
+     btSom = audio.loadSound("assets/som.mp3") 
      audioPage4 = audio.loadSound("assets/page4.mp3")
 
     -- Função para navegar para a próxima pagina
     local function onNextTap(event)
-        audio.play(somProx)
+        audio.play(btSom)
         composer.gotoScene("page5", { effect = "slideLeft", time = 500 })
     end
  
     -- Função para voltar para a pagina anterior 
     local function onBackTap(event)
-        audio.play(SomVolt)
+        audio.play(btSom)
         composer.gotoScene("page3", { effect = "slideRight", time = 500 })
     end
      
@@ -229,6 +225,7 @@ function scene:destroy(event)
      audio.dispose(somBotao)
      somBotao= nil
   end
+  
   if audioPage4 then
     if canal4 then
         audio.stop(canal4)

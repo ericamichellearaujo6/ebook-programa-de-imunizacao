@@ -8,8 +8,7 @@ local scene = composer.newScene()
     
 -- Variável para armazenar o som
 local somColisao
-local somProx
-local SomVolt
+local btSom
 local audioPage1
 local canal1
 
@@ -75,8 +74,7 @@ end
 
  --carregando sons
  somColisao = audio.loadSound("assets/somDestruir.mp3")
- somProx = audio.loadSound("assets/proximo.mp3")
- SomVolt = audio.loadSound("assets/anterior.mp3")
+ btSom = audio.loadSound("assets/som.mp3")
  audioPage1 = audio.loadSound("assets/page1.mp3")
 
  
@@ -223,7 +221,7 @@ function scene:create(event)
          if canal1 then 
           audio.stop(canal1);
         end
-        audio.play(somProx)
+        audio.play(btSom)
         composer.gotoScene("page2", { effect = "slideLeft", time = 500 })
     end
 
@@ -232,7 +230,7 @@ function scene:create(event)
         if canal1 then 
             audio.stop(canal1);
         end
-        audio.play(SomVolt)
+        audio.play(btSom)
         composer.gotoScene("capa", { effect = "slideRight", time = 500 })
     end
 
@@ -330,9 +328,9 @@ end
 
 function scene:destroy(event)
 
-    if somBotao then
-        audio.dispose(somBotao)
-        somBotao = nil
+    if btSom then
+        audio.dispose(btSom)
+        btSom = nil
     end
     if somColisao then
         audio.dispose(somColisao)

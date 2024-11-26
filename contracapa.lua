@@ -3,9 +3,8 @@ local composer = require("composer")
 local scene = composer.newScene()
 
 -- Variável global para o som
-local somBotao
-local somProx -- RENOMEAR PARA HOME
-local SomVolt 
+local btSom
+
 
 
 -- Função auxiliar para criar botões
@@ -41,19 +40,19 @@ function scene:create(event)
  
 
        -- Carregar o som do botão
-       somBotao = audio.loadSound("assets/som.mp3") 
-       somProx = audio.loadSound("assets/proximo.mp3") -- RENOMEAR PARA HOME
-       SomVolt = audio.loadSound("assets/anterior.mp3")
+       btSom = audio.loadSound("assets/som.mp3") 
+       
+      
 
     -- Função para navegar para a pagina incicial
     local function onNextTap(event)
-        audio.play(somProx)
+        audio.play(btSom)
         composer.gotoScene("capa", { effect = "zoomInOut", time = 500 })
     end
 
      -- Função para navegar para a pagina anterior 
     local function onBackTap(event)
-        audio.play(SomVolt)
+        audio.play(btSom)
         composer.gotoScene("referencias", { effect = "slideRight", time = 500 })
     end
      
@@ -108,9 +107,9 @@ end
 function scene:destroy(event)
     local sceneGroup = self.view
     
-    if somBotao then
-        audio.dispose(somBotao)
-        somBotao = nil
+    if btSom then
+        audio.dispose(btSom)
+        btSom = nil
     end
 end
 
