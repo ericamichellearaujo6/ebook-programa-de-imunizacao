@@ -4,8 +4,17 @@ local composer = require("composer")
 -- Cria uma nova cena
 local scene = composer.newScene()
 
+local btSomL
+local btSomD
+
 -- Variável para armazenar o som
-local somBotao
+local btSom
+local audioContraindicacoes
+local canalContra
+local resposta1
+local explicacao1
+local image
+local btVolt
 
 -- Função auxiliar para criar botões
 local function createButton(sceneGroup, imagePath, x, y, scaleX, scaleY, onTap)
@@ -37,49 +46,124 @@ function scene:create(event)
     bg.x = centerX
     bg.y = centerY 
 
-    -- Carregar o som
-    somBotao = audio.loadSound("assets/som.mp3") 
+    -- Carregar os áudios
+    btSom = audio.loadSound("assets/som.mp3") 
+    audioContraindicacoes =  audio.loadSound("assets/contraindicacao.mp3") 
+    resposta1 = audio.loadSound("assets/resposta1.mp3") 
+    explicacao1 = audio.loadSound("assets/explicacao1.mp3") 
 
     -- Função para voltar para a página anterior
     local function onBackTap(event)
-        audio.play(somBotao)
+        audio.play(btSom)
         composer.gotoScene("page4", { effect = "slideRight", time = 500 })
     end
 
-    -- Função para exibir a imagem e o botão 'Voltar'
-    local function showImage()
-        -- Criar e exibir a imagem
-        local image = display.newImage(sceneGroup, "assets/explicacao1.png")
-        image.x = display.contentCenterX - 50
-        image.y = display.contentCenterY + 50
-        image.xScale = 1.2
-        image.yScale = 1.2
+    -- Função para ligar o som
+    local function onSoundOnTap(event)
+        print("Ligando o som...")
+        if not canalContra then 
+            canalContra = audio.play(audioContraindicacoes, { loops = -1 })  -- Reproduz som em loop
+            print("Som ligado no canal: ", canalContra)
+        end
+        btSomL.isVisible = false -- Esconde o botão "Ligar som"
+        btSomD.isVisible = true -- Mostra o botão "Desligar som"
+    end
 
-        -- Criar o botão 'Voltar'
-        local btVolt = createButton(
-            sceneGroup,
-            "assets/resposta.png",
-            display.contentWidth - 260,
-            display.contentHeight - 195, 
-            1.2, 
-            1.2, 
-            onBackTap
-        )
+    -- Função para desligar o som e remover elementos da tela
+    local function onSoundOffTap(event)
+        print("Desligando o som...")
+        if canalContra then
+            print("Som está ligado, desligando agora...")  
+            audio.stop(canalContra)
+            canalContra = nil 
+            print("Som desligado.")
+        end
+
+        -- Esconde o botão "Desligar som" e mostra o botão "Ligar som"
+        btSomD.isVisible = false
+        btSomL.isVisible = true
+
+        -- Remove a imagem da explicação
+        if image then
+            display.remove(image)
+            image = nil
+        end
+
+        -- Remove o botão "Voltar" se ele foi exibido
+        if btVolt then
+            display.remove(btVolt)
+            btVolt = nil
+        end
+    end
+
+    -- Função para exibir a imagem e reproduzir os áudios com controle de sequência
+    local function showImage()
+        -- Verifica se há algum áudio em execução e o para
+        if canalContra then
+            audio.stop(canalContra)
+            canalContra = nil
+        end
+
+        -- Remove a imagem existente, se houver
+        if image then
+            display.remove(image)
+            image = nil
+        end
+
+        -- Reproduz o áudio de resposta1
+        canalContra = audio.play(resposta1, {
+            onComplete = function()
+                -- Após o término do áudio resposta1, reproduz o áudio explicacao1
+                canalContra = audio.play(explicacao1, {
+                    onComplete = function()
+                        -- Exibe o botão 'Voltar' apenas quando o áudio explicacao1 terminar
+                        if not btVolt then
+                            btVolt = createButton(
+                                sceneGroup,
+                                "assets/resposta.png",
+                                display.contentWidth - 200,
+                                display.contentHeight - 160,
+                                1.2,
+                                1.2,
+                                onBackTap
+                            )
+                        end
+                    end
+                })
+
+                -- Exibe a imagem após iniciar o áudio explicacao1
+                image = display.newImage(sceneGroup, "assets/explicacao1.png")
+                image.x = display.contentCenterX - 50
+                image.y = display.contentCenterY + 50
+                image.xScale = 1.2
+                image.yScale = 1.2
+            end
+        })
+    end
+
+    -- Função para o botão "Mostrar Imagem"
+    local function onShowImageTap(event)
+        -- Reproduz o som ao clicar no "Mostrar Imagem"
+        if canalResposta1 then
+            audio.stop(canalResposta1)
+        end
+        canalResposta1 = audio.play(resposta1)
+        showImage()
     end
 
     -- Adicionar botão para mostrar a imagem
-    local btShowRect = createButton(
+    btShowRect = createButton(
         sceneGroup,
-        "assets/resposta1.png",  -- Imagem do botão para exibir a retângulo
+        "assets/resposta1.png",  -- Imagem do botão para exibir o retângulo
         centerX + 200, 
         centerY - 250, 
         1.0, 
         1.0, 
-        showImage
+        onShowImageTap
     )
 
     -- botão 'Ligar Som'
-    local btSomL = createButton(
+    btSomL = createButton(
         sceneGroup,
         "assets/som-ligar.png",
         display.contentWidth - 530,
@@ -88,9 +172,10 @@ function scene:create(event)
         0.5, 
         onSoundOnTap
     )
+    btSomL.isVisible = false
 
     -- botão 'Desligar Som'
-    local btSomD = createButton(
+    btSomD = createButton(
         sceneGroup,
         "assets/som-desliga.png",
         display.contentWidth - 220,
@@ -99,6 +184,7 @@ function scene:create(event)
         0.5, 
         onSoundOffTap
     )
+    btSomD.isVisible = true
 end
 
 -- show()
@@ -107,11 +193,9 @@ function scene:show(event)
     local phase = event.phase
 
     if (phase == "will") then
-        -- Código aqui é executado quando a cena está prestes a aparecer na tela
-
-    elseif (phase == "did") then
-        -- Código aqui é executado quando a cena já está na tela
-
+        if not canalContra then
+            canalContra = audio.play(audioContraindicacoes, { loops = -1 }) -- Reproduz o som em loop
+        end
     end
 end
 
@@ -121,11 +205,20 @@ function scene:hide(event)
     local phase = event.phase
 
     if (phase == "will") then
-        -- Código aqui é executado quando a cena está prestes a sair da tela
+        if canalContra then
+            audio.stop(canalContra)
+            canalContra = nil
+        end
 
-    elseif (phase == "did") then
-        -- Código aqui é executado imediatamente após a cena sair da tela
+        if image then
+            display.remove(image)
+            image = nil
+        end
 
+        if canalResposta1 then
+            audio.stop(canalResposta1)
+            canalResposta1 = nil
+        end 
     end
 end
 
@@ -133,20 +226,27 @@ end
 function scene:destroy(event)
     local sceneGroup = self.view
 
-    if somBotao then
+    if btSom then
         audio.stop()
-        audio.dispose(somBotao)
-        somBotao = nil
+        audio.dispose(btSom)
+        btSom = nil
+    end
+
+    if btVolt then
+        display.remove(btVolt)
+        btVolt = nil
+    end
+
+    if btShowRect then
+        display.remove(btShowRect)
+        btShowRect = nil
     end
 end
 
--- -----------------------------------------------------------------------------------
--- Scene event function listeners
--- -----------------------------------------------------------------------------------
+-- Adiciona os eventos do ciclo de vida da cena
 scene:addEventListener("create", scene)
 scene:addEventListener("show", scene)
 scene:addEventListener("hide", scene)
 scene:addEventListener("destroy", scene)
--- -----------------------------------------------------------------------------------
 
 return scene
