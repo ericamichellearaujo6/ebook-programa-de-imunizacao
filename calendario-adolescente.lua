@@ -6,7 +6,7 @@ local scene = composer.newScene()
 local somBotao
 
 
--- Função auxiliar para criar botões
+-- Função  para criar botões
 local function createButton(sceneGroup, imagePath, x, y, scaleX, scaleY, onTap)
     local button = display.newImage(sceneGroup, imagePath)
     button.x = x
@@ -36,7 +36,6 @@ function scene:create(event)
     local bg = display.newImageRect(sceneGroup,"assets/calendario-adolescente.png", 768, 1024)
      bg.x = centerX
      bg.y = centerY 
- 
 
        -- Carregar o som do botão
        somBotao = audio.loadSound("assets/som.mp3") 
@@ -58,9 +57,6 @@ local btVolt = createButton(
     onBackTap 
 )
 
-
-
-   
 end
 
 -- show

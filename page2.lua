@@ -13,7 +13,7 @@ local audioPage2
 local canal2
 
 
--- Função auxiliar para criar botões
+-- Função  para criar botões
 local function createButton(sceneGroup, imagePath, x, y, scaleX, scaleY, onTap)
     local button = display.newImage(sceneGroup, imagePath)
     button.x = x
@@ -44,7 +44,6 @@ function scene:create(event)
     bg.y = centerY 
 
     -- Carregar o som do botão
-    
     btSom = audio.loadSound("assets/som.mp3")
     audioPage2 =  audio.loadSound("assets/page2.mp3")
 
@@ -64,11 +63,11 @@ function scene:create(event)
    local function onSoundOnTap(event)
     print("Ligando o som...")
    if  not canal2 then 
-      canal2 = audio.play(audioPage2, { loops = -1 })  -- Reproduz som em loop
+      canal2 = audio.play(audioPage2, { loops = -1 })  
       print("Som ligado no canal: ", canal2)
    end
-    btSomL.isVisible = false -- Esconde o botão "Ligar som"
-    btSomD.isVisible = true -- Mostra o botão "Desligar som"
+    btSomL.isVisible = false 
+    btSomD.isVisible = true 
 end
 
  -- função para desligar o som
@@ -80,8 +79,8 @@ local function onSoundOffTap(event)
     canal2 = nil 
     print("Som desligado.")
   end
-    btSomD.isVisible = false -- Esconde o botão "Desligar som"
-    btSomL.isVisible = true -- Mostra o botão "Ligar som"
+    btSomD.isVisible = false 
+    btSomL.isVisible = true 
 end
     -- Adicionando os botões
 
@@ -159,12 +158,13 @@ end
             scaleFactor,
             function()
               audio.play(somBotao);
-                --para o audio quado ofor pressionado o bt do calendario
+                
                 if canal2 then
                     audio.pause(canal2);
                 end
-                btSomL.isVisible = true  -- Torna o botão "Ligar som" visível
+                btSomL.isVisible = true  
                 btSomD.isVisible = false
+                
                 -- Direcionar para a pagina correspondente
                 if i == 1 then
                     composer.gotoScene("calendario-crianca") -- Para o botão bebe
@@ -190,7 +190,7 @@ function scene:show(event)
 
     if (phase == "will") then
        if not canal2 then
-        canal2 = audio.play(audioPage2, { loops = -1 }) -- Reproduz o som em loop
+        canal2 = audio.play(audioPage2, { loops = -1 }) 
        end
     end
 end

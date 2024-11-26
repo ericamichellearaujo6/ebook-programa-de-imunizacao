@@ -6,7 +6,7 @@ local scene = composer.newScene()
 local somBotao
 
 
--- Função auxiliar para criar botões
+-- Função  para criar botões
 local function createButton(sceneGroup, imagePath, x, y, scaleX, scaleY, onTap)
     local button = display.newImage(sceneGroup, imagePath)
     button.x = x
@@ -44,7 +44,6 @@ local function onBackTap(event)
     composer.gotoScene("page5", { effect = "slideRight", time = 500 })
 end
 
-
 -- Adicionar botão 'Voltar'
 local btVolt = createButton(
     sceneGroup,
@@ -59,8 +58,6 @@ end
 
  -- Carregar o som do botão
  somBotao = audio.loadSound("assets/som.mp3") 
-
-
 
 -- show
 function scene:show(event)

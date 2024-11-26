@@ -16,7 +16,7 @@ local explicacao1
 local image
 local btVolt
 
--- Função auxiliar para criar botões
+-- Função  para criar botões
 local function createButton(sceneGroup, imagePath, x, y, scaleX, scaleY, onTap)
     local button = display.newImage(sceneGroup, imagePath)
     button.x = x
@@ -64,7 +64,7 @@ function scene:create(event)
         
         -- Se o som foi desligado antes, reinicie a cena
         if canalContra == nil then
-            -- Resetar tudo para o estado inicial
+            -- Resetar  para o estado inicial
             btSomL.isVisible = false
             btSomD.isVisible = true
 
@@ -79,7 +79,7 @@ function scene:create(event)
                 btVolt = nil
             end
 
-            -- Reproduz o áudio de contraindicações
+            
             canalContra = audio.play(audioContraindicacoes, { loops = -1 })
             print("Som ligado no canal: ", canalContra)
         end
@@ -122,7 +122,7 @@ function scene:create(event)
         end
     end
 
-    -- Função para exibir a imagem e reproduzir os áudios com controle de sequência
+    -- Função para exibir a imagem e reproduzir os áudios 
     local function showImage()
         -- Verifica se há algum áudio em execução e o para
         if canalContra then
@@ -181,7 +181,7 @@ function scene:create(event)
     -- Adicionar botão para mostrar a imagem
     btShowRect = createButton(
         sceneGroup,
-        "assets/resposta1.png",  -- Imagem do botão para exibir o retângulo
+        "assets/resposta1.png",  
         centerX + 200, 
         centerY - 250, 
         1.0, 
@@ -221,7 +221,7 @@ function scene:show(event)
 
     if (phase == "will") then
         if not canalContra then
-            canalContra = audio.play(audioContraindicacoes, { loops = -1 }) -- Reproduz o som em loop
+            canalContra = audio.play(audioContraindicacoes, { loops = -1 }) 
         end
     end
 end
@@ -270,7 +270,7 @@ function scene:destroy(event)
     end
 end
 
--- Adiciona os eventos do ciclo de vida da cena
+
 scene:addEventListener("create", scene)
 scene:addEventListener("show", scene)
 scene:addEventListener("hide", scene)

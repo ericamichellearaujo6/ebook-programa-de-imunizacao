@@ -6,7 +6,7 @@ local scene = composer.newScene()
 local somBotao
 
 
--- Função auxiliar para criar botões
+-- Função  para criar botões
 local function createButton(sceneGroup, imagePath, x, y, scaleX, scaleY, onTap)
     local button = display.newImage(sceneGroup, imagePath)
     button.x = x
@@ -60,7 +60,7 @@ local btVolt = createButton(
     local function onVerticalButtonTap(event)
         audio.play(somBotao)
         
-        -- Verifique qual botão foi pressionado e redirecione para a página correspondente
+        -- Verifica qual botão foi pressionado e redireciona para a página correspondente
         if event.target.id == 1 then
             composer.gotoScene("crianca0234", { effect = "slideLeft", time = 500 })
         elseif event.target.id == 2 then
@@ -72,7 +72,7 @@ local btVolt = createButton(
         end
     end
 
-       -- Definindo as posições individuais para os botões
+       -- Definindo as posições dos botões
     local posiBt = {
         { x = 328, y = 340, id = 1 }, -- Botão 1
         { x = 325, y = 530, id = 2 }, -- Botão 2
@@ -84,7 +84,7 @@ local btVolt = createButton(
     for i,posi in ipairs(posiBt) do
         local button = createButton(
             sceneGroup,
-            "assets/bt_mais.png",  -- Substitua pelo caminho da sua imagem
+            "assets/bt_mais.png",  
             posi.x,
             posi.y ,
             1.0,

@@ -6,7 +6,7 @@ local scene = composer.newScene()
 local somBotao
 
 
--- Função auxiliar para criar botões
+-- Função  para criar botões
 local function createButton(sceneGroup, imagePath, x, y, scaleX, scaleY, onTap)
     local button = display.newImage(sceneGroup, imagePath)
     button.x = x
@@ -59,9 +59,6 @@ local btVolt = createButton(
     onBackTap 
 )
 
-
-
-   
 end
 
 -- show

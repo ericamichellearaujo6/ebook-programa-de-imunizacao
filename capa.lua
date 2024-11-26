@@ -12,7 +12,7 @@ local btSomD
 
 
 
--- Função auxiliar para criar botões
+-- Função  para criar botões
 local function createButton(sceneGroup, imagePath, x, y, scaleX, scaleY, onTap)
     local button = display.newImage(sceneGroup, imagePath)
     button.x = x
@@ -55,7 +55,7 @@ function scene:create(event)
 
         if canalAudio then 
             audio.stop(canalAudio)
-            --canalAudio = nil
+            canalAudio = nil
         end  
         audio.play(btSom)
         composer.gotoScene("page1", { effect = "fade", time = 800 })
@@ -66,18 +66,18 @@ function scene:create(event)
         if not canalAudio then
             canalAudio = audio.play(somCapa, { loops = -1 }) -- Reproduz o som em loop
         end
-        btSomL.isVisible = false -- Esconde "Ligar Som"
-        btSomD.isVisible = true -- Mostra "Desligar Som"
+        btSomL.isVisible = false 
+        btSomD.isVisible = true 
     end
     
     --função para desligar o som
     local function onSoundOffTap(event)
         if canalAudio then
-            audio.stop(canalAudio) -- Para o som
+            audio.stop(canalAudio) 
             canalAudio = nil
         end
-        btSomD.isVisible = false -- Esconde "Desligar Som"
-        btSomL.isVisible = true -- Mostra "Ligar Som"
+        btSomD.isVisible = false 
+        btSomL.isVisible = true 
     end
 
    -- botão 'Próximo'
@@ -123,7 +123,7 @@ function scene:show(event)
     if (phase == "did") then
       
         if not canalAudio then
-        canalAudio = audio.play(audioCapa, { loops = -1 }) -- Reproduz em loop
+        canalAudio = audio.play(audioCapa, { loops = -1 }) 
         end  
     end
 end

@@ -14,7 +14,7 @@ local SomVolt
 local audioPage3
 local canal3
 
--- Função auxiliar para criar botões
+-- Função  para criar botões
 local function createButton(sceneGroup, imagePath, x, y, scaleX, scaleY, onTap)
     local button = display.newImage(sceneGroup, imagePath)
     button.x = x
@@ -26,7 +26,6 @@ local function createButton(sceneGroup, imagePath, x, y, scaleX, scaleY, onTap)
     end
     return button
 end
-
 
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
@@ -57,7 +56,7 @@ function scene:create(event)
     end
 
      function btEvento:touch(event)
-        local self = event.target  -- Para referenciar a própria imagem
+        local self = event.target 
         if event.phase == "began" and event.isSecondaryTouch then
             -- Verifique se dois dedos estão tocando simultaneamente na imagem1
             if event.numTouches == 2 then
@@ -90,11 +89,11 @@ function scene:create(event)
 local function onSoundOnTap(event)
     print("Ligando o som...")
    if  not canal3 then 
-      canal3 = audio.play(audioPage3, { loops = -1 })  -- Reproduz som em loop
+      canal3 = audio.play(audioPage3, { loops = -1 })  
       print("Som ligado no canal: ", canal3)
    end
-    btSomL.isVisible = false -- Esconde o botão "Ligar som"
-    btSomD.isVisible = true -- Mostra o botão "Desligar som"
+    btSomL.isVisible = false 
+    btSomD.isVisible = true 
 end
 
  -- função para desligar o som
@@ -106,10 +105,9 @@ local function onSoundOffTap(event)
     canal3 = nil 
     print("Som desligado.")
   end
-    btSomD.isVisible = false -- Esconde o botão "Desligar som"
-    btSomL.isVisible = true -- Mostra o botão "Ligar som"
+    btSomD.isVisible = false 
+    btSomL.isVisible = true 
 end
-
 
     -- botão 'Próximo'
     local btProx = createButton(
@@ -167,7 +165,7 @@ function scene:show(event)
 
     if (phase == "will") then
        if not canal3 then
-        canal3 =  audio.play(audioPage3, { loops = -1 }) -- Reproduz o som em loop 
+        canal3 =  audio.play(audioPage3, { loops = -1 }) 
        end
     end
 end

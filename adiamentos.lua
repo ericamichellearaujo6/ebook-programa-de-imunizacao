@@ -16,7 +16,7 @@ local explicacao2
 local image
 local btVolt
 
--- Função auxiliar para criar botões
+-- Função  para criar botões
 local function createButton(sceneGroup, imagePath, x, y, scaleX, scaleY, onTap)
     local button = display.newImage(sceneGroup, imagePath)
     button.x = x
@@ -79,7 +79,7 @@ function scene:create(event)
                 btVolt = nil
             end
 
-            -- Reproduz o áudio de contraindicações
+            -- Reproduz o áudio de adiamentos
             canalAdia = audio.play(audioAdiamento, { loops = -1 })
             print("Som ligado no canal: ", canalAdia)
         end
@@ -116,7 +116,7 @@ function scene:create(event)
             print("Botão 'Voltar' não encontrado para remoção.")
         end
 
-        -- Certifique-se de que o botão "Resposta1" está visível
+        -- Certifique-se de que o botão "Resposta2" está visível
         if btShowRect then
             btShowRect.isVisible = true
         end
@@ -136,10 +136,10 @@ function scene:create(event)
             image = nil
         end
 
-        -- Reproduz o áudio de resposta1
+        -- Reproduz o áudio de resposta2
         canalAdia = audio.play(resposta2, {
             onComplete = function()
-                -- Após o término do áudio resposta1, reproduz o áudio explicacao1
+                -- Após o término do áudio resposta2, reproduz o áudio explicacao1
                 canalAdia = audio.play(explicacao2, {
                     onComplete = function()
                         -- Exibe o botão "Voltar" somente se ainda não foi criado
@@ -158,7 +158,7 @@ function scene:create(event)
                     end
                 })
 
-                -- Exibe a imagem após iniciar o áudio explicacao1
+                -- Exibe a imagem após iniciar o áudio explicacao2
                 image = display.newImage(sceneGroup, "assets/explicacao2.png")
                 image.x = display.contentCenterX - 50
                 image.y = display.contentCenterY + 50
@@ -221,7 +221,7 @@ function scene:show(event)
 
     if (phase == "will") then
         if not canalAdia then
-            canalAdia = audio.play(audioAdiamento, { loops = -1 }) -- Reproduz o som em loop
+            canalAdia = audio.play(audioAdiamento, { loops = -1 }) 
         end
     end
 end

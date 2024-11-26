@@ -12,16 +12,11 @@ local btSom
 local audioPage1
 local canal1
 
-
-
 -- Inicializando as tabelas virus e bacterias
 local virus = {}
 local bacterias = {}
 
-
-
- 
--- Função auxiliar para criar botões
+-- Função  para criar botões
 local function createButton(sceneGroup, imagePath, x, y, scaleX, scaleY, onTap)
     local button = display.newImage(sceneGroup, imagePath)
     button.x = x
@@ -37,16 +32,16 @@ end
 -- Função para fazer virus e bacterias  flutuarem
 local function flutuar(objeto)
     transition.to(objeto, {
-        y = objeto.y - 20, -- Move para cima 
-        time = 1000, -- Tempo 
-        transition = easing.inOutSine, -- Animação 
+        y = objeto.y - 20, 
+        time = 1000, 
+        transition = easing.inOutSine, 
         onComplete = function()
             transition.to(objeto, {
-                y = objeto.y + 20, -- Move para baixo 
-                time = 1000, -- Tempo 
-                transition = easing.inOutSine, -- Animação 
+                y = objeto.y + 20, 
+                time = 1000, 
+                transition = easing.inOutSine, 
                 onComplete = function()
-                    -- Chama a função novamente para continuar flutuando
+                    
                     flutuar(objeto)
                 end
             })
@@ -70,7 +65,6 @@ local function verColisao(obj1, obj2)
         return false
     end
 end
-
 
  --carregando sons
  somColisao = audio.loadSound("assets/somDestruir.mp3")
@@ -98,22 +92,17 @@ function scene:create(event)
     zeGotinha:scale(2.5, 2.5)
 
     
-
     -- Função para arrastar o Zé Gotinha
     local function arrastarImagem(event)
         
-        
         if event.phase == "began" then
 
-            
-            -- condição para parar o som e deixar o btSomL visivel
             if canal1 then
                 audio.stop(canal1)
                 canal1 = nil
             end
            btSomL.isVisible = true
            btSomD.isVisible = false
-
 
             display.getCurrentStage():setFocus(zeGotinha)
             zeGotinha.isFocus = true
@@ -133,6 +122,7 @@ function scene:create(event)
                     audio.play(somColisao)
                     virus[i]:removeSelf()
                     table.remove(virus, i)
+
                    -- verifica se todos os virus foram eliminados
                    if #virus == 0 and #bacterias == 0 then
                     local fimImage = display.newImageRect(sceneGroup, "assets/img.png", 390, 390)
@@ -153,6 +143,7 @@ function scene:create(event)
                     audio.play(somColisao)
                     bacterias[i]:removeSelf()
                     table.remove(bacterias, i)
+
                     -- verifica se todos os virus foram eliminados
                     if #virus == 0 and #bacterias == 0 then
                         local fimImage = display.newImageRect(sceneGroup, "assets/img.png", 390, 390)
@@ -168,8 +159,6 @@ function scene:create(event)
         elseif event.phase == "ended" or event.phase == "cancelled" then
             display.getCurrentStage():setFocus(nil)
             zeGotinha.isFocus = false
-
-            
         end
         return true
     end
@@ -199,7 +188,7 @@ function scene:create(event)
         virus[i].x = posiVirus[i].x
         virus[i].y = posiVirus[i].y
         print("Vírus criado:", i, "Posição:", virus[i].x, virus[i].y)
-        flutuar(virus[i])  -- Chama a função para fazer o vírus flutuar
+        flutuar(virus[i])  
     end
 
     -- Criar bactérias e adicionar à tabela
@@ -208,14 +197,10 @@ function scene:create(event)
         bacterias[i].x = posiBac[i].x
         bacterias[i].y = posiBac[i].y
         print("Bactéria criada:", i, "Posição:", bacterias[i].x, bacterias[i].y)
-        flutuar(bacterias[i])  -- Chama a função para fazer a bactéria flutuar
+        flutuar(bacterias[i]) 
     end
 
-    
 
-   
-
-    
     -- Função para navegar para a próxima página
     local function onNextTap(event)
          if canal1 then 
@@ -238,11 +223,11 @@ function scene:create(event)
     local function onSoundOnTap(event)
         print("Ligando o som...")
        if  not canal1 then 
-        canal1 = audio.play(audioPage1, { loops = -1 })  -- Reproduz som em loop
+        canal1 = audio.play(audioPage1, { loops = -1 })  
         print("Som ligado no canal: ", canal1)
        end
-        btSomL.isVisible = false -- Esconde o botão "Ligar som"
-        btSomD.isVisible = true -- Mostra o botão "Desligar som"
+        btSomL.isVisible = false 
+        btSomD.isVisible = true 
     end
 
      -- função para desligar o som
@@ -254,11 +239,11 @@ function scene:create(event)
         canal1 = nil 
         print("Som desligado.")
       end
-        btSomD.isVisible = false -- Esconde o botão "Desligar som"
-        btSomL.isVisible = true -- Mostra o botão "Ligar som"
+        btSomD.isVisible = false 
+        btSomL.isVisible = true 
     end
 
-    -- Criação dos botões de navegação e som
+    -- Criação dos botões 
     local btProx = createButton(
         sceneGroup,
         "assets/bt-prox.png",
@@ -310,7 +295,7 @@ function scene:show(event)
 
     if phase == "did" then
          if not canal1 then
-          canal1 = audio.play(audioPage1, { loops = -1 }) -- Reproduz o som em loop
+          canal1 = audio.play(audioPage1, { loops = -1 }) 
          end
     end
 end

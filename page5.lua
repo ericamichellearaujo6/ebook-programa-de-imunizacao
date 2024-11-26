@@ -4,15 +4,16 @@ local composer = require("composer")
 -- Cria uma nova cena
 local scene = composer.newScene()
 
+-- Variáveis para armazenar os botões
 local btSomL
 local btSomD
 
--- Variável para armazenar o som
-local btSom 
+-- Variáveis para armazenar o som
+local btSom
 local audioPage5
 local canal5
 
--- Função auxiliar para criar botões
+-- Função  para criar botões
 local function createButton(sceneGroup, imagePath, x, y, scaleX, scaleY, onTap)
     local button = display.newImage(sceneGroup, imagePath)
     button.x = x
@@ -40,100 +41,98 @@ function scene:create(event)
     -- Adicionar imagem de fundo
     local bg = display.newImageRect(sceneGroup, "assets/mitos-e-verdades.png", 768, 1024)
     bg.x = centerX
-    bg.y = centerY 
-    
-   -- add a imagem do celular
+    bg.y = centerY
+
+    -- Adicionar a imagem do celular
     local cel = display.newImageRect(sceneGroup, "assets/celular.png", 225, 225)
-     -- Definir as posições das imagens
-     cel.x = display.contentCenterX - 50
-     cel.y = display.contentCenterY  + 290
+    cel.x = display.contentCenterX - 50
+    cel.y = display.contentCenterY + 290
 
-    -- Carregar o som do botão proximo
-      btSom = audio.loadSound("assets/som.mp3")
-     audioPage5 = audio.loadSound("assets/page5.mp3")
+    -- Carregar o som
+    btSom = audio.loadSound("assets/som.mp3")
+    audioPage5 = audio.loadSound("assets/page5.mp3")
 
-    -- Função para navegar para a próxima pagina
+    -- Função para navegar para a próxima página
     local function onNextTap(event)
         audio.play(btSom)
         composer.gotoScene("referencias", { effect = "slideLeft", time = 500 })
     end
-    
 
-    -- Função para navegar para a pagina anterior 
+    -- Função para navegar para a página anterior
     local function onBackTap(event)
         audio.play(btSom)
         composer.gotoScene("page4", { effect = "slideRight", time = 500 })
     end
 
-    -- função para ligar o som 
-local function onSoundOnTap(event)
-    print("Ligando o som...")
-   if  not canal5 then 
-      canal5 = audio.play(audioPage5, { loops = -1 })  -- Reproduz som em loop
-      print("Som ligado no canal: ", canal5)
-   end
-    btSomL.isVisible = false -- Esconde o botão "Ligar som"
-    btSomD.isVisible = true -- Mostra o botão "Desligar som"
-end
+    -- Função para ligar o som
+    local function onSoundOnTap(event)
+        print("Ligando o som...")
+        if not canal5 then
+            canal5 = audio.play(audioPage5, { loops = -1 })  
+            print("Som ligado no canal: ", canal5)
+        end
+        btSomL.isVisible = false 
+        btSomD.isVisible = true  
+    end
 
- -- função para desligar o som
-local function onSoundOffTap(event)
-    print("Desligando o som...")
-  if canal5 then
-    print("Som está ligado, desligando agora...")  
-    audio.stop(canal5);
-    canal5 = nil 
-    print("Som desligado.")
-  end
-    btSomD.isVisible = false -- Esconde o botão "Desligar som"
-    btSomL.isVisible = true -- Mostra o botão "Ligar som"
-end
-    -- add botoes
+    -- Função para desligar o som
+    local function onSoundOffTap(event)
+        print("Desligando o som...")
+        if canal5 then
+            print("Som está ligado, desligando agora...")
+            audio.stop(canal5)
+            canal5 = nil
+            print("Som desligado.")
+        end
+        btSomD.isVisible = false 
+        btSomL.isVisible = true  
+    end
 
-    --  botão 'Próximo'
+    -- Adicionar botões
+
+    -- Botão 'Próximo'
     local btProx = createButton(
-        sceneGroup,
-        "assets/bt-prox.png",
+        sceneGroup, "assets/bt-prox.png", 
         display.contentWidth - 70, 
         display.contentHeight - 55, 
         0.5, 
-        0.5, 
-        onNextTap 
-    )
+        0.5,
+         onNextTap
+        )
 
-    -- botão 'Voltar'
+    -- Botão 'Voltar'
     local btVolt = createButton(
-        sceneGroup,
-        "assets/bt-voltar.png",
+        sceneGroup, 
+        "assets/bt-voltar.png", 
         70, 
-        display.contentHeight - 55, 
-        0.5, 
-        0.5, 
-        onBackTap 
-    )
+        display.contentHeight - 55,
+         0.5, 
+         0.5, 
+         onBackTap
+        )
 
-    -- botão 'Ligar Som'
-     btSomL = createButton(
-        sceneGroup,
-        "assets/som-ligar.png",
-        display.contentWidth - 530, 
-        display.contentHeight - 55, 
-        0.5, 
-        0.5, 
-        onSoundOnTap 
-    )
+    -- Botão 'Ligar Som'
+    btSomL = createButton(
+        sceneGroup, 
+        "assets/som-ligar.png", 
+         display.contentWidth - 530,
+         display.contentHeight - 55,
+          0.5, 
+          0.5, 
+          onSoundOnTap
+        )
     btSomL.isVisible = false
 
-    -- botão 'Desligar Som'
-     btSomD = createButton(
-        sceneGroup,
-        "assets/som-desliga.png",
-        display.contentWidth - 220, 
-        display.contentHeight - 55, 
-        0.5, 
-        0.5,
-        onSoundOffTap 
-    )
+    -- Botão 'Desligar Som'
+    btSomD = createButton(
+         sceneGroup, 
+         "assets/som-desliga.png",
+         display.contentWidth - 220, 
+         display.contentHeight - 55, 
+         0.5,
+         0.5, 
+         onSoundOffTap
+        )
     btSomD.isVisible = true
 
 end
@@ -145,50 +144,33 @@ function scene:show(event)
 
     if (phase == "will") then
         if not canal5 then
-            canal5 =  audio.play(audioPage5, { loops = -1 }) -- Reproduz o som em loop 
-           end
-
+            canal5 = audio.play(audioPage5, { loops = -1 }) 
+        end
     elseif (phase == "did") then
-
-       
-        local balanco = 1.5 -- limite de aceleração
+        -- Função para detectar o shake
         local function movimentar(event)
-            -- Verificar se os valores do acelerômetro não são nulos
-            if event.x and event.y and event.z then
-                if math.abs(event.x) > balanco or math.abs(event.y) > balanco or math.abs(event.z) > balanco then
-                    -- Remove o listener
-                    Runtime:removeEventListener("accelerometer", movimentar)
-
-                    -- Muda para a próxima página
-                    composer.gotoScene("mitos-e-verdades", { effect = "fade", time = 500 })
+            if event then
+                if event.x and event.y and event.z then
+                    print("Acelerômetro - X: " .. event.x .. " Y: " .. event.y .. " Z: " .. event.z)
+                    
+                    local shakeThreshold = 2  -- Defina o limite de aceleração para detectar o shake
+                    if math.abs(event.x) > shakeThreshold or math.abs(event.y) > shakeThreshold or math.abs(event.z) > shakeThreshold then
+                        print("Shake detectado!")
+                        composer.gotoScene("mitos-e-verdades", { effect = "fade", time = 500 })
+                    else
+                        print("Aceleração abaixo do limite")
+                    end
+                else
+                    print("Erro: dados do acelerômetro não recebidos corretamente.")
                 end
             else
-                -- Depuração: caso algum valor seja nil
-                print("Valores do acelerômetro não estão disponíveis:", event.x, event.y, event.z)
+                print("Erro: evento do acelerômetro não recebido.")
             end
         end
-  -- Verificar se o código está rodando no simulador
-  if system.getInfo("environment") == "simulator" then
-    print("Simulador detectado: usando valores simulados para o acelerômetro.")
 
-    -- Simular valores do acelerômetro
-    local function simulateAccelerometer()
-        local simulatedEvent = { 
-            x = math.random(-2, 2), 
-            y = math.random(-2, 2), 
-            z = math.random(-2, 2) 
-        }
-        movimentar(simulatedEvent)
-    end
-
-    -- Simula o evento do acelerômetro a cada 1 segundo, 10 vezes
-    timer.performWithDelay(1000, simulateAccelerometer, 10)
-
-else
-        -- add o acelerometro de novo
+        -- Adicionar o listener de acelerômetro
         Runtime:addEventListener("accelerometer", movimentar)
     end
-  end
 end
 
 -- hide()
@@ -197,6 +179,8 @@ function scene:hide(event)
     local phase = event.phase
 
     if (phase == "will") then
+       
+        Runtime:removeEventListener("accelerometer", movimentar)
         if canal5 then
             audio.stop(canal5)
             canal5 = nil
@@ -213,7 +197,7 @@ function scene:destroy(event)
     if btSom then
         audio.stop()
         audio.dispose(btSom)
-        btSom= nil
+        btSom = nil
     end
 
     if audioPage5 then
@@ -224,7 +208,6 @@ function scene:destroy(event)
         audio.dispose(audioPage5)
         audioPage5 = nil
     end
-  
 end
 
 -- -----------------------------------------------------------------------------------

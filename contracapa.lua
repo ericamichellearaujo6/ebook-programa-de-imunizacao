@@ -11,7 +11,7 @@ local btSomD
 
 
 
--- Função auxiliar para criar botões
+-- Função  para criar botões
 local function createButton(sceneGroup, imagePath, x, y, scaleX, scaleY, onTap)
     local button = display.newImage(sceneGroup, imagePath)
     button.x = x
@@ -73,20 +73,20 @@ function scene:create(event)
     --função para ligar o som
     local function onSoundOnTap(event)
         if not canalContracapa then
-            canalContracapa = audio.play(audioContracapa, { loops = -1 }) -- Reproduz o som em loop
+            canalContracapa = audio.play(audioContracapa, { loops = -1 }) 
         end
-        btSomL.isVisible = false -- Esconde "Ligar Som"
-        btSomD.isVisible = true -- Mostra "Desligar Som"
+        btSomL.isVisible = false 
+        btSomD.isVisible = true 
     end
     
     --função para desligar o som
     local function onSoundOffTap(event)
         if canalContracapa then
-            audio.stop(canalContracapa) -- Para o som
+            audio.stop(canalContracapa) 
             canalContracapa = nil
         end
-        btSomD.isVisible = false -- Esconde "Desligar Som"
-        btSomL.isVisible = true -- Mostra "Ligar Som"
+        btSomD.isVisible = false 
+        btSomL.isVisible = true 
     end
 ------- add botoes
 
@@ -145,7 +145,7 @@ function scene:show(event)
     if (phase == "did") then
       
         if not canalContracapa then
-            canalContracapa = audio.play(audioContracapa, { loops = -1 }) -- Reproduz em loop
+            canalContracapa = audio.play(audioContracapa, { loops = -1 }) 
             end
     end
 end

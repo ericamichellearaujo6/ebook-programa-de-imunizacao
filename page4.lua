@@ -13,7 +13,7 @@ local audioPage4
 local canal4
 
 
--- Função auxiliar para criar botões
+-- Função  para criar botões
 local function createButton(sceneGroup, imagePath, x, y, scaleX, scaleY, onTap)
     local button = display.newImage(sceneGroup, imagePath)
     button.x = x
@@ -43,7 +43,7 @@ function scene:create(event)
     bg.x = centerX
     bg.y = centerY
 
- -- Adicionar a imagens dos cartoes (AINDA SEM FUNCIONALIDADES)
+ -- Adicionar a imagens dos cartoes 
     local cartao1 = display.newImageRect(sceneGroup, "assets/cartao_contraindicacoes.png", 250, 330)
     local cartao2 = display.newImageRect(sceneGroup, "assets/cartao_adiamentos.png", 250, 330)
     local cartao3 = display.newImageRect(sceneGroup, "assets/cartao_eficacia.png", 250, 330)
@@ -78,8 +78,8 @@ local function moveToCard(icon, card, SceneName)
         -- Move o ícone para a posição do cartão
         transition.to(icon, {
             time = 500,
-            x = card.x, -- Mover o ícone para a posição X do cartão
-            y = card.y + 65, -- Mover o ícone para a posição Y do cartão
+            x = card.x, 
+            y = card.y + 65, 
             transition = easing.inOutQuad,
             onComplete = function()
                 -- Após a transição, navega para a cena correspondente
@@ -88,8 +88,8 @@ local function moveToCard(icon, card, SceneName)
                 -- Quando a navegação ocorrer, move o ícone de volta para a posição original
                 transition.to(icon, {
                     time = 500,
-                    x = originalX, -- Retorna para a posição X original
-                    y = originalY, -- Retorna para a posição Y original
+                    x = originalX, 
+                    y = originalY, 
                     transition = easing.inOutQuad
                 })
             end  
@@ -99,7 +99,7 @@ local function moveToCard(icon, card, SceneName)
     end
 end  
 
--- Adicionar eventos de toque nos ícones
+
 icon1:addEventListener("tap", function()
     print("Ícone 1 tocado")
     moveToCard(icon1, cartao1,"contraindicacoes") -- Mover ícone1 para cartao1
@@ -134,11 +134,11 @@ end)
 local function onSoundOnTap(event)
     print("Ligando o som...")
    if  not canal4 then 
-      canal4 = audio.play(audioPage4, { loops = -1 })  -- Reproduz som em loop
+      canal4 = audio.play(audioPage4, { loops = -1 })  
       print("Som ligado no canal: ", canal4)
    end
-    btSomL.isVisible = false -- Esconde o botão "Ligar som"
-    btSomD.isVisible = true -- Mostra o botão "Desligar som"
+    btSomL.isVisible = false
+    btSomD.isVisible = true 
 end
 
  -- função para desligar o som
@@ -150,9 +150,10 @@ local function onSoundOffTap(event)
     canal4 = nil 
     print("Som desligado.")
   end
-    btSomD.isVisible = false -- Esconde o botão "Desligar som"
-    btSomL.isVisible = true -- Mostra o botão "Ligar som"
+    btSomD.isVisible = false 
+    btSomL.isVisible = true 
 end
+
     --- add os botoes -----
 
     -- botão 'Próximo'
@@ -212,7 +213,7 @@ function scene:show(event)
 
     if (phase == "will") then
         if not canal4 then
-            canal4 = audio.play(audioPage4, { loops = -1 }) -- Reproduz o som em loop
+            canal4 = audio.play(audioPage4, { loops = -1 }) 
            end
     end
 end

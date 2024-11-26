@@ -7,7 +7,7 @@ local btSom
 
 
 
--- Função auxiliar para criar botões
+-- Função  para criar botões
 local function createButton(sceneGroup, imagePath, x, y, scaleX, scaleY, onTap)
     local button = display.newImage(sceneGroup, imagePath)
     button.x = x
@@ -38,11 +38,9 @@ function scene:create(event)
      bg.x = centerX
      bg.y = centerY 
  
-
        -- Carregar o som do botão
        btSom = audio.loadSound("assets/som.mp3") 
        
-
     -- Função para navegar para a próxima pagina
     local function onNextTap(event)
         audio.play(btSom)
@@ -55,7 +53,8 @@ function scene:create(event)
         composer.gotoScene("page5", { effect = "slideRight", time = 500 })
     end
      
-------- add botoes
+------- add botoes ------
+
    -- Adicionar botão 'Próximo'
    local btProx = createButton(
     sceneGroup,
