@@ -150,21 +150,45 @@ function scene:show(event)
 
     elseif (phase == "did") then
 
-        local balanco = 1.5 --limite de aceleração
+       
+        local balanco = 1.5 -- limite de aceleração
         local function movimentar(event)
-            if math.abs(event.x) > balanco or math.abs(event.y) > balanco or math.abs(event.z) > balanco then
-                -- remove 
-                Runtime:removeEventListener("accelerometer",movimentar);
+            -- Verificar se os valores do acelerômetro não são nulos
+            if event.x and event.y and event.z then
+                if math.abs(event.x) > balanco or math.abs(event.y) > balanco or math.abs(event.z) > balanco then
+                    -- Remove o listener
+                    Runtime:removeEventListener("accelerometer", movimentar)
 
-                --muda para a pagina
-                composer.gotoScene("mitos-e-verdades", { effect = "fade", time = 500 })
-            end 
+                    -- Muda para a próxima página
+                    composer.gotoScene("mitos-e-verdades", { effect = "fade", time = 500 })
+                end
+            else
+                -- Depuração: caso algum valor seja nil
+                print("Valores do acelerômetro não estão disponíveis:", event.x, event.y, event.z)
+            end
         end
+  -- Verificar se o código está rodando no simulador
+  if system.getInfo("environment") == "simulator" then
+    print("Simulador detectado: usando valores simulados para o acelerômetro.")
 
+    -- Simular valores do acelerômetro
+    local function simulateAccelerometer()
+        local simulatedEvent = { 
+            x = math.random(-2, 2), 
+            y = math.random(-2, 2), 
+            z = math.random(-2, 2) 
+        }
+        movimentar(simulatedEvent)
+    end
+
+    -- Simula o evento do acelerômetro a cada 1 segundo, 10 vezes
+    timer.performWithDelay(1000, simulateAccelerometer, 10)
+
+else
         -- add o acelerometro de novo
         Runtime:addEventListener("accelerometer", movimentar)
     end
-
+  end
 end
 
 -- hide()

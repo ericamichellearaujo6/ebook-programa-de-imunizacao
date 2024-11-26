@@ -27,7 +27,7 @@ end
 
 
 --carregar o som do audio
-somCapa = audio.loadSound("assets/capa.mp3")
+ audioCapa = audio.loadSound("assets/capa.mp3")
  -- Carregar o som do botão proximo 
  btSom = audio.loadSound("assets/som.mp3") 
 
@@ -123,7 +123,7 @@ function scene:show(event)
     if (phase == "did") then
       
         if not canalAudio then
-        canalAudio = audio.play(somCapa, { loops = -1 }) -- Reproduz em loop
+        canalAudio = audio.play(audioCapa, { loops = -1 }) -- Reproduz em loop
         end  
     end
 end
@@ -146,9 +146,9 @@ end
 function scene:destroy(event)
     local sceneGroup = self.view
 
-    if somCapa then
-        audio.dispose(somCapa)
-        somCapa = nil
+    if audioCapa then
+        audio.dispose(audioCapa)
+        audioCapa = nil
     end
 
     -- Libere o som ao destruir a cena
