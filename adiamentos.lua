@@ -4,8 +4,17 @@ local composer = require("composer")
 -- Cria uma nova cena
 local scene = composer.newScene()
 
+local btSomL
+local btSomD
+
 -- Variável para armazenar o som
-local somBotao
+local btSom
+local audioAdiamento
+local canalAdia
+local resposta2
+local explicacao2
+local image
+local btVolt
 
 -- Função auxiliar para criar botões
 local function createButton(sceneGroup, imagePath, x, y, scaleX, scaleY, onTap)
@@ -37,49 +46,151 @@ function scene:create(event)
     bg.x = centerX
     bg.y = centerY 
 
-    -- Carregar o som
-    somBotao = audio.loadSound("assets/som.mp3") 
+    -- Carregar os áudios
+    btSom = audio.loadSound("assets/som.mp3") 
+    audioAdiamento =  audio.loadSound("assets/adiamentos.mp3") 
+    resposta2 = audio.loadSound("assets/resposta2.mp3") 
+    explicacao2 = audio.loadSound("assets/explicacao2.mp3") 
 
     -- Função para voltar para a página anterior
     local function onBackTap(event)
-        audio.play(somBotao)
-        composer.gotoScene("page5", { effect = "slideRight", time = 500 })
+        audio.play(btSom)
+        composer.gotoScene("page4", { effect = "slideRight", time = 500 })
     end
 
-    -- Função para exibir a imagem e o botão 'Voltar'
-    local function showImage()
-        -- Criar e exibir a imagem
-        local image = display.newImage(sceneGroup, "assets/explicacao2.png")
-        image.x = display.contentCenterX - 30
-        image.y = display.contentCenterY + 10
-        image.xScale = 1.2
-        image.yScale = 1.2
+    -- Função para ligar o som
+    local function onSoundOnTap(event)
+        print("Ligando o som...")
+        
+        -- Se o som foi desligado antes, reinicie a cena
+        if canalAdia == nil then
+            -- Resetar tudo para o estado inicial
+            btSomL.isVisible = false
+            btSomD.isVisible = true
 
-        -- Criar o botão 'Voltar'
-        local btVolt = createButton(
-            sceneGroup,
-            "assets/resposta.png",
-            display.contentWidth - 260,
-            display.contentHeight - 195, 
-            1.2, 
-            1.2, 
-            onBackTap
-        )
+            -- Reiniciar a tela, removendo imagens e botões antigos
+            if image then
+                display.remove(image)
+                image = nil
+            end
+
+            if btVolt then
+                display.remove(btVolt)
+                btVolt = nil
+            end
+
+            -- Reproduz o áudio de contraindicações
+            canalAdia = audio.play(audioAdiamento, { loops = -1 })
+            print("Som ligado no canal: ", canalAdia)
+        end
+    end
+
+    -- Função para desligar o som e remover elementos da tela
+    local function onSoundOffTap(event)
+        print("Desligando o som...")
+
+        -- Interrompe o áudio atual e limpa o canal
+        if canalAdia then
+            print("Som está ligado, desligando agora...")
+            audio.stop(canalAdia)
+            canalAdia = nil
+            print("Som desligado.")
+        end
+
+        -- Alterna a visibilidade dos botões de som
+        btSomD.isVisible = false
+        btSomL.isVisible = true
+
+        -- Remove a imagem da explicação, se existente
+        if image then
+            display.remove(image)
+            image = nil
+        end
+
+        -- Remove o botão "Voltar" somente se ele foi criado
+        if btVolt then
+            print("Removendo botão 'Voltar'.")
+            display.remove(btVolt)
+            btVolt = nil
+        else
+            print("Botão 'Voltar' não encontrado para remoção.")
+        end
+
+        -- Certifique-se de que o botão "Resposta1" está visível
+        if btShowRect then
+            btShowRect.isVisible = true
+        end
+    end
+
+    -- Função para exibir a imagem e reproduzir os áudios com controle de sequência
+    local function showImage()
+        -- Verifica se há algum áudio em execução e o para
+        if canalAdia then
+            audio.stop(canalAdia)
+            canalAdia = nil
+        end
+
+        -- Remove a imagem existente, se houver
+        if image then
+            display.remove(image)
+            image = nil
+        end
+
+        -- Reproduz o áudio de resposta1
+        canalAdia = audio.play(resposta2, {
+            onComplete = function()
+                -- Após o término do áudio resposta1, reproduz o áudio explicacao1
+                canalAdia = audio.play(explicacao2, {
+                    onComplete = function()
+                        -- Exibe o botão "Voltar" somente se ainda não foi criado
+                        if not btVolt then
+                            print("Criando botão 'Voltar'.")
+                            btVolt = createButton(
+                                sceneGroup,
+                                "assets/resposta.png",
+                                display.contentWidth - 200,
+                                display.contentHeight - 160,
+                                1.2,
+                                1.2,
+                                onBackTap
+                            )
+                        end
+                    end
+                })
+
+                -- Exibe a imagem após iniciar o áudio explicacao1
+                image = display.newImage(sceneGroup, "assets/explicacao2.png")
+                image.x = display.contentCenterX - 50
+                image.y = display.contentCenterY + 50
+                image.xScale = 1.1
+                image.yScale = 1.1
+            end
+        })
+    end
+
+    -- Função para o botão "Mostrar Imagem"
+    local function onShowImageTap(event)
+        -- Reproduz o som ao clicar no "Mostrar Imagem"
+        if canalResposta2 then
+            audio.stop(canalResposta2)
+        end
+        canalResposta2 = audio.play(resposta2)
+        showImage()
     end
 
     -- Adicionar botão para mostrar a imagem
-    local btShowRect = createButton(
+    btShowRect = createButton(
         sceneGroup,
-        "assets/resposta2.png",  -- Imagem do botão para exibir a retângulo
+        "assets/resposta2.png",  -- Imagem do botão para exibir o retângulo
         centerX + 200, 
         centerY - 250, 
         1.0, 
         1.0, 
-        showImage
+        onShowImageTap
     )
 
     -- botão 'Ligar Som'
-    local btSomL = createButton(
+    btSomL = createButton(
         sceneGroup,
         "assets/som-ligar.png",
         display.contentWidth - 530,
@@ -88,9 +199,10 @@ function scene:create(event)
         0.5, 
         onSoundOnTap
     )
+    btSomL.isVisible = false
 
     -- botão 'Desligar Som'
-    local btSomD = createButton(
+    btSomD = createButton(
         sceneGroup,
         "assets/som-desliga.png",
         display.contentWidth - 220,
@@ -99,6 +211,7 @@ function scene:create(event)
         0.5, 
         onSoundOffTap
     )
+    btSomD.isVisible = true
 end
 
 -- show()
@@ -107,11 +220,9 @@ function scene:show(event)
     local phase = event.phase
 
     if (phase == "will") then
-        -- Código aqui é executado quando a cena está prestes a aparecer na tela
-
-    elseif (phase == "did") then
-        -- Código aqui é executado quando a cena já está na tela
-
+        if not canalAdia then
+            canalAdia = audio.play(audioAdiamento, { loops = -1 }) -- Reproduz o som em loop
+        end
     end
 end
 
@@ -121,11 +232,20 @@ function scene:hide(event)
     local phase = event.phase
 
     if (phase == "will") then
-        -- Código aqui é executado quando a cena está prestes a sair da tela
+        if canalAdia then
+            audio.stop(canalAdia)
+            canalAdia = nil
+        end
 
-    elseif (phase == "did") then
-        -- Código aqui é executado imediatamente após a cena sair da tela
+        if image then
+            display.remove(image)
+            image = nil
+        end
 
+        if canalResposta2 then
+            audio.stop(canalResposta2)
+            canalResposta2 = nil
+        end 
     end
 end
 
@@ -133,20 +253,27 @@ end
 function scene:destroy(event)
     local sceneGroup = self.view
 
-    if somBotao then
+    if btSom then
         audio.stop()
-        audio.dispose(somBotao)
-        somBotao = nil
+        audio.dispose(btSom)
+        btSom = nil
+    end
+
+    if btVolt then
+        display.remove(btVolt)
+        btVolt = nil
+    end
+
+    if btShowRect then
+        display.remove(btShowRect)
+        btShowRect = nil
     end
 end
 
--- -----------------------------------------------------------------------------------
--- Scene event function listeners
--- -----------------------------------------------------------------------------------
+-- Adiciona os eventos do ciclo de vida da cena
 scene:addEventListener("create", scene)
 scene:addEventListener("show", scene)
 scene:addEventListener("hide", scene)
 scene:addEventListener("destroy", scene)
--- -----------------------------------------------------------------------------------
 
 return scene

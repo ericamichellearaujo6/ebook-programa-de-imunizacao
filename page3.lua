@@ -45,7 +45,28 @@ function scene:create(event)
     bg.x = centerX
     bg.y = centerY 
 
- 
+
+    local btEvento = display.newImage(sceneGroup, "assets/btEvento.png")
+     btEvento.x = display.contentCenterX 
+     btEvento.y = display.contentCenterY + 150
+     btEvento.xScale = 0.9
+     btEvento.yScale = 0.9
+   
+     local function trocaPagina()
+        composer.gotoScene("eventos", { effect = "fade", time = 500 })
+    end
+
+     function btEvento:touch(event)
+        local self = event.target  -- Para referenciar a própria imagem
+        if event.phase == "began" and event.isSecondaryTouch then
+            -- Verifique se dois dedos estão tocando simultaneamente na imagem1
+            if event.numTouches == 2 then
+                trocaPagina()
+            end
+        end
+        return true
+    end
+
      -- Carregar o som
        btSom = audio.loadSound("assets/som.mp3")
        audioPage3 = audio.loadSound("assets/page3.mp3")

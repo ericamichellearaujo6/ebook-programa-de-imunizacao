@@ -62,22 +62,36 @@ function scene:create(event)
      
 
 -- Adicionar os ícones
-local icon1 = createButton(sceneGroup, "assets/icone_contraindicacao.png", centerX - 250, centerY - 5, 0.5, 0.5)
-local icon2 = createButton(sceneGroup, "assets/icone_adiamentos.png", centerX, centerY - 5, 0.5, 0.5)
-local icon3 = createButton(sceneGroup, "assets/icone_eficacia.png", centerX + 250, centerY - 5, 0.5, 0.5)
+local icon1 = createButton(sceneGroup, "assets/icone_contraindicacao.png", centerX - 250, centerY - 10, 0.5, 0.5)
+local icon2 = createButton(sceneGroup, "assets/icone_adiamentos.png", centerX, centerY - 10, 0.5, 0.5)
+local icon3 = createButton(sceneGroup, "assets/icone_eficacia.png", centerX + 250, centerY - 10, 0.5, 0.5)
   
--- Função para mover o ícone para o seu respectivo cartão
-local function moveToCard(icon, card,SceneName)
+-- Função para mover o ícone para o seu respectivo cartão e depois voltar à posição original
+local function moveToCard(icon, card, SceneName)
     if icon and card then
         print("Movendo ícone para o cartão:", icon, "->", card.x, card.y)
+        
+        -- Armazena as posições iniciais do ícone
+        local originalX = icon.x
+        local originalY = icon.y
+
+        -- Move o ícone para a posição do cartão
         transition.to(icon, {
             time = 500,
             x = card.x, -- Mover o ícone para a posição X do cartão
             y = card.y + 65, -- Mover o ícone para a posição Y do cartão
             transition = easing.inOutQuad,
             onComplete = function()
-                print("indo pra cena: " .. SceneName)
-            composer.gotoScene(SceneName, { effect = "fade", time = 500 })
+                -- Após a transição, navega para a cena correspondente
+                composer.gotoScene(SceneName, { effect = "fade", time = 500 })
+
+                -- Quando a navegação ocorrer, move o ícone de volta para a posição original
+                transition.to(icon, {
+                    time = 500,
+                    x = originalX, -- Retorna para a posição X original
+                    y = originalY, -- Retorna para a posição Y original
+                    transition = easing.inOutQuad
+                })
             end  
         })
     else

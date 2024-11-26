@@ -61,38 +61,64 @@ function scene:create(event)
     -- Função para ligar o som
     local function onSoundOnTap(event)
         print("Ligando o som...")
-        if not canalContra then 
-            canalContra = audio.play(audioContraindicacoes, { loops = -1 })  -- Reproduz som em loop
+        
+        -- Se o som foi desligado antes, reinicie a cena
+        if canalContra == nil then
+            -- Resetar tudo para o estado inicial
+            btSomL.isVisible = false
+            btSomD.isVisible = true
+
+            -- Reiniciar a tela, removendo imagens e botões antigos
+            if image then
+                display.remove(image)
+                image = nil
+            end
+
+            if btVolt then
+                display.remove(btVolt)
+                btVolt = nil
+            end
+
+            -- Reproduz o áudio de contraindicações
+            canalContra = audio.play(audioContraindicacoes, { loops = -1 })
             print("Som ligado no canal: ", canalContra)
         end
-        btSomL.isVisible = false -- Esconde o botão "Ligar som"
-        btSomD.isVisible = true -- Mostra o botão "Desligar som"
     end
 
     -- Função para desligar o som e remover elementos da tela
     local function onSoundOffTap(event)
         print("Desligando o som...")
+
+        -- Interrompe o áudio atual e limpa o canal
         if canalContra then
-            print("Som está ligado, desligando agora...")  
+            print("Som está ligado, desligando agora...")
             audio.stop(canalContra)
-            canalContra = nil 
+            canalContra = nil
             print("Som desligado.")
         end
 
-        -- Esconde o botão "Desligar som" e mostra o botão "Ligar som"
+        -- Alterna a visibilidade dos botões de som
         btSomD.isVisible = false
         btSomL.isVisible = true
 
-        -- Remove a imagem da explicação
+        -- Remove a imagem da explicação, se existente
         if image then
             display.remove(image)
             image = nil
         end
 
-        -- Remove o botão "Voltar" se ele foi exibido
+        -- Remove o botão "Voltar" somente se ele foi criado
         if btVolt then
+            print("Removendo botão 'Voltar'.")
             display.remove(btVolt)
             btVolt = nil
+        else
+            print("Botão 'Voltar' não encontrado para remoção.")
+        end
+
+        -- Certifique-se de que o botão "Resposta1" está visível
+        if btShowRect then
+            btShowRect.isVisible = true
         end
     end
 
@@ -116,8 +142,9 @@ function scene:create(event)
                 -- Após o término do áudio resposta1, reproduz o áudio explicacao1
                 canalContra = audio.play(explicacao1, {
                     onComplete = function()
-                        -- Exibe o botão 'Voltar' apenas quando o áudio explicacao1 terminar
+                        -- Exibe o botão "Voltar" somente se ainda não foi criado
                         if not btVolt then
+                            print("Criando botão 'Voltar'.")
                             btVolt = createButton(
                                 sceneGroup,
                                 "assets/resposta.png",
