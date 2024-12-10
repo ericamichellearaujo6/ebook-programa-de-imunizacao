@@ -8,10 +8,9 @@ local btSomL
 local btSomD
 
 -- Variável para armazenar o som
-local  btSom
+local btSom
 local audioPage2
 local canal2
-
 
 -- Função  para criar botões
 local function createButton(sceneGroup, imagePath, x, y, scaleX, scaleY, onTap)
@@ -43,144 +42,99 @@ function scene:create(event)
     bg.x = centerX
     bg.y = centerY 
 
+    -- Imagem da UBS
+    local img = display.newImageRect(sceneGroup, "assets/ubs.png", 250, 250)
+    img.x = display.contentCenterX - 10
+    img.y = display.contentCenterY + 250
+
+    -- Adicionar os ícones, alinhados horizontalmente
+    local espacoIcone = 100  -- Definir o espaçamento entre os ícones
+
+    -- Posições X ajustadas para os ícones ficarem ao lado do outro
+    local icon1 = createButton(sceneGroup, "assets/bebe.png", centerX - 3 * espacoIcone, centerY - 10, 0.8, 0.8)
+    local icon2 = createButton(sceneGroup, "assets/adolescente.png", centerX - espacoIcone, centerY - 10, 0.8, 0.8)
+    local icon3 = createButton(sceneGroup, "assets/adulto_e_idoso.png", centerX + espacoIcone, centerY - 10, 0.8, 0.8)
+    local icon4 = createButton(sceneGroup, "assets/gestante.png", centerX + 3 * espacoIcone, centerY - 10, 0.8, 0.8)
+
     -- Carregar o som do botão
     btSom = audio.loadSound("assets/som.mp3")
-    audioPage2 =  audio.loadSound("assets/page2.mp3")
+    audioPage2 = audio.loadSound("assets/page2.mp3")
 
-    -- Função para navegar para a próxima pagina 
+    -- Função para navegar para a próxima página 
     local function onNextTap(event)
         audio.play(btSom)
         composer.gotoScene("page3", { effect = "slideLeft", time = 500 })
     end
 
-    -- Função para voltar para a pagina anterior 
+    -- Função para voltar para a página anterior 
     local function onBackTap(event)
         audio.play(btSom)
         composer.gotoScene("page1", { effect = "slideRight", time = 500 })
     end
 
-   -- função para ligar o som 
-   local function onSoundOnTap(event)
-    print("Ligando o som...")
-   if  not canal2 then 
-      canal2 = audio.play(audioPage2, { loops = -1 })  
-      print("Som ligado no canal: ", canal2)
-   end
-    btSomL.isVisible = false 
-    btSomD.isVisible = true 
-end
-
- -- função para desligar o som
-local function onSoundOffTap(event)
-    print("Desligando o som...")
-  if canal2 then
-    print("Som está ligado, desligando agora...")  
-    audio.stop(canal2);
-    canal2 = nil 
-    print("Som desligado.")
-  end
-    btSomD.isVisible = false 
-    btSomL.isVisible = true 
-end
-    -- Adicionando os botões
-
-    -- botão 'Próximo'
-    local btProx = createButton(
-        sceneGroup,
-        "assets/bt-prox.png",
-        display.contentWidth - 70, 
-        display.contentHeight - 55, 
-        0.5, 
-        0.5, 
-        onNextTap 
-    )
-
-    -- botão 'Voltar'
-    local btVolt = createButton(
-        sceneGroup,
-        "assets/bt-voltar.png",
-        70, 
-        display.contentHeight - 55, 
-        0.5, 
-        0.5, 
-        onBackTap 
-    )
-
-    -- botão 'Ligar Som'
-     btSomL = createButton(
-        sceneGroup,
-        "assets/som-ligar.png",
-        display.contentWidth - 530,
-        display.contentHeight - 55, 
-        0.5, 
-        0.5, 
-        onSoundOnTap 
-    )
-    btSomL.isVisible = false --começa invisivel 
-
-    -- botão 'Desligar Som'
-     btSomD = createButton(
-        sceneGroup,
-        "assets/som-desliga.png",
-        display.contentWidth - 220,
-        display.contentHeight - 55, 
-        0.5, 
-        0.5, 
-        onSoundOffTap 
-    )
-    btSomD.isVisible = true
-
-    -- Adicionar os botões novos
-    local NewButtons = 4
-    local espacoEntreBotoes = 90
-    local deslocamentoEsquerda = 50 
-
-    -- Lista de imagens dos novos botões
-    local newButtonImages = {
-        "assets/bebe.png",
-        "assets/adolescente.png",
-        "assets/adulto_e_idoso.png",
-        "assets/gestante.png"
-    }
-
-    -- Definir a escala 
-    local scaleFactor = 0.9 
-
-    local newButtons = {}
-     somBotao = audio.loadSound("assets/som.mp3");
-    for i = 1, NewButtons do
-        newButtons[i] = createButton(
-            sceneGroup,
-            newButtonImages[i],
-            (150 + ((i - 1) * (100 + espacoEntreBotoes))) - deslocamentoEsquerda,
-            display.contentHeight - 255, 
-            scaleFactor, 
-            scaleFactor,
-            function()
-              audio.play(somBotao);
-                
-                if canal2 then
-                    audio.pause(canal2);
-                end
-                btSomL.isVisible = true  
-                btSomD.isVisible = false
-                
-                -- Direcionar para a pagina correspondente
-                if i == 1 then
-                    composer.gotoScene("calendario-crianca") -- Para o botão bebe
-                elseif i == 2 then
-                    composer.gotoScene("calendario-adolescente") -- Para o botão adolescente
-                elseif i == 3 then
-                    composer.gotoScene("calendario-adultoEidoso") -- Para o botão adulto_e_idoso
-                elseif i == 4 then
-                    composer.gotoScene("calendario-gestante") -- Para o botão gestante
-                end
-            end
-        )
+    -- Função para ligar o som 
+    local function onSoundOnTap(event)
+        print("Ligando o som...")
+        if not canal2 then 
+            canal2 = audio.play(audioPage2, { loops = -1 })  
+            print("Som ligado no canal: ", canal2)
+        end
+        btSomL.isVisible = false 
+        btSomD.isVisible = true 
     end
 
-     -- Reproduzir o som automaticamente ao carregar a cena
-     canal2 = audio.play(audioPage2, { loops = -1 })  
+    -- Função para desligar o som
+    local function onSoundOffTap(event)
+        print("Desligando o som...")
+        if canal2 then
+            print("Som está ligado, desligando agora...")  
+            audio.stop(canal2);
+            canal2 = nil 
+            print("Som desligado.")
+        end
+        btSomD.isVisible = false 
+        btSomL.isVisible = true 
+    end
+
+    -- Adicionando os botões de navegação
+    local btProx = createButton(sceneGroup, "assets/bt-prox.png", display.contentWidth - 70, display.contentHeight - 55, 0.5, 0.5, onNextTap)
+    local btVolt = createButton(sceneGroup, "assets/bt-voltar.png", 70, display.contentHeight - 55, 0.5, 0.5, onBackTap)
+
+    -- Botões de som
+    btSomL = createButton(sceneGroup, "assets/som-ligar.png", display.contentWidth - 530, display.contentHeight - 55, 0.5, 0.5, onSoundOnTap)
+    btSomL.isVisible = false -- começa invisível 
+    btSomD = createButton(sceneGroup, "assets/som-desliga.png", display.contentWidth - 220, display.contentHeight - 55, 0.5, 0.5, onSoundOffTap)
+    btSomD.isVisible = true
+
+    -- Função para mover o ícone até a imagem da UBS, carregar a nova cena, e depois voltar o ícone
+    local function moveToUBSAndNavigate(icon, sceneName, originalPosition)
+        -- Animação de movimento até a UBS
+        transition.to(icon, { x = img.x, y = img.y, time = 500, onComplete = function()
+            -- Navega para a cena correspondente após o movimento
+            composer.gotoScene(sceneName, { effect = "slideLeft", time = 500 })
+
+            -- Após um tempo, move o ícone de volta para sua posição original
+            transition.to(icon, { x = originalPosition.x, y = originalPosition.y, time = 500 })
+        end })
+    end
+
+    -- Função para os ícones
+    icon1:addEventListener("tap", function()
+        audio.play(btSom)
+        moveToUBSAndNavigate(icon1, "calendario-crianca", { x = centerX - 3 * espacoIcone, y = centerY - 10 }) -- Cena para o botão bebê
+    end)
+    icon2:addEventListener("tap", function()
+        audio.play(btSom)
+        moveToUBSAndNavigate(icon2, "calendario-adolescente", { x = centerX - espacoIcone, y = centerY - 10 }) -- Cena para o botão adolescente
+    end)
+    icon3:addEventListener("tap", function()
+        audio.play(btSom)
+        moveToUBSAndNavigate(icon3, "calendario-adultoEidoso", { x = centerX + espacoIcone, y = centerY - 10 }) -- Cena para o botão adulto e idoso
+    end)
+    icon4:addEventListener("tap", function()
+        audio.play(btSom)
+        moveToUBSAndNavigate(icon4, "calendario-gestante", { x = centerX + 3 * espacoIcone, y = centerY - 10 }) -- Cena para o botão gestante
+    end)
 end
 
 -- show()
@@ -190,7 +144,7 @@ function scene:show(event)
 
     if (phase == "will") then
        if not canal2 then
-        canal2 = audio.play(audioPage2, { loops = -1 }) 
+            canal2 = audio.play(audioPage2, { loops = -1 }) 
        end
     end
 end
@@ -201,17 +155,17 @@ function scene:hide(event)
     local phase = event.phase
 
     if (phase == "will") then
-      if canal2 then
-        audio.stop(canal2);
-        canal2 = nil
-      end 
+        if canal2 then
+            audio.stop(canal2);
+            canal2 = nil
+        end 
     end
 end
 
 -- destroy()
 function scene:destroy(event)
     local sceneGroup = self.view
-    
+
     if btSom then
         audio.stop()
         audio.dispose(btSom)

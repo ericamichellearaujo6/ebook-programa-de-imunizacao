@@ -1,10 +1,8 @@
 local composer = require("composer")
-
 local scene = composer.newScene()
 
 -- Variável global para o som
 local somBotao
-
 
 -- Função  para criar botões
 local function createButton(sceneGroup, imagePath, x, y, scaleX, scaleY, onTap)
@@ -25,39 +23,44 @@ end
 
 -- create()
 function scene:create(event)
-
     local sceneGroup = self.view
 
-     -- Coordenadas para o centro da tela
-     local centerX = display.contentCenterX
-     local centerY = display.contentCenterY
- 
-     -- Adicionar imagem de fundo
-    local bg = display.newImageRect(sceneGroup,"assets/calendario-gestante.png", 768, 1024)
-     bg.x = centerX
-     bg.y = centerY 
- 
+    -- Coordenadas para o centro da tela
+    local centerX = display.contentCenterX
+    local centerY = display.contentCenterY
 
-       -- Carregar o som do botão
-       somBotao = audio.loadSound("assets/som.mp3") 
+      -- Verificar se estamos no simulador ou no dispositivo
+      if system.getInfo("environment") == "simulator" then
+        -- Carregar uma imagem de fundo no simulador
+        local bg = display.newImageRect(sceneGroup,"assets/calendario-gestante.png", 768, 1024)
+        bg.x = centerX
+        bg.y = centerY
+    else
+        -- Carregar o vídeo no dispositivo real
+        local video = native.newVideo(centerX, centerY, 768, 1024)  -- Ajuste o tamanho do vídeo conforme necessário
+        video:load("assets/calendario-gestante.mp4")  -- Caminho do arquivo MP4
+        video:play()
+    end
 
-    -- Função para voltar para a cena anterior 
+    -- Carregar o som do botão
+    somBotao = audio.loadSound("assets/som.mp3")
+
+    -- Função para voltar para a cena anterior
     local function onBackTap(event)
         audio.play(somBotao)
         composer.gotoScene("page2", { effect = "slideRight", time = 500 })
     end
 
--- Adicionar botão 'Voltar'
-local btVolt = createButton(
-    sceneGroup,
-    "assets/voltar.png",
-    670, 
-    display.contentHeight - 980, 
-    1.0, 
-    1.0, 
-    onBackTap 
-)
-
+    -- Adicionar botão 'Voltar'
+    local btVolt = createButton(
+        sceneGroup,
+        "assets/voltar.png",
+        670,
+        display.contentHeight - 980,
+        1.0,
+        1.0,
+        onBackTap
+    )
 end
 
 -- show
@@ -84,10 +87,15 @@ end
 function scene:destroy(event)
     local sceneGroup = self.view
 
-    -- Libere o som ao destruir a cena
+    -- Libere o som e o vídeo ao destruir a cena
     if somBotao then
         audio.dispose(somBotao)
         somBotao = nil
+    end
+    if video then
+        video:stop()
+        video:removeSelf()
+        video = nil
     end
 end
 
