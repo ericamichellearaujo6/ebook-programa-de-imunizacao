@@ -33,10 +33,10 @@ function scene:create(event)
      local centerY = display.contentCenterY
  
      -- Adicionar imagem de fundo
-    local bg = display.newImageRect(sceneGroup,"assets/calendario-adultoEidoso1.png", 768, 1024)
+    local bg = display.newImageRect(sceneGroup,"assets/calendarioAdulto.png", 768, 1024)
      bg.x = centerX
      bg.y = centerY 
- 
+
        -- Carregar o som do botão
        somBotao = audio.loadSound("assets/som.mp3") 
 
@@ -45,28 +45,28 @@ function scene:create(event)
         audio.play(somBotao)
         composer.gotoScene("page2", { effect = "slideRight", time = 500 })
     end
-      -- Função para navegar para a continuação da  pagina
-      local function onContinueTap(event)
-        audio.play(somBotao)
-        composer.gotoScene("calendario-adulto2", { effect = "slideLeft", time = 500 })
-    end
 
-    -- Adicionar botão 'Continuação da pagina '
-    local btContinua = createButton(
+   -- Função para navegar para a próxima pagina
+   local function onNextTap(event)
+     audio.play(btSom)
+     composer.gotoScene("calendarioAdulto2", { effect = "fade", time = 800 })
+ end
+    -- botão 'Próximo'
+    local btProx = createButton(
         sceneGroup,
-        "assets/btCont.png",
-        display.contentWidth - 140, 
-        display.contentHeight - 30, 
-        0.6, 
-        0.6, 
-        onContinueTap
-    )
-
+        "assets/bt-prox.png",
+        display.contentWidth - 70, 
+        display.contentHeight - 55, 
+        0.5, 
+        0.5, 
+        onNextTap 
+     )
+    
 -- Adicionar botão 'Voltar'
 local btVolt = createButton(
     sceneGroup,
     "assets/voltar.png",
-    690, 
+    670, 
     display.contentHeight - 980, 
     1.0, 
     1.0, 
@@ -91,19 +91,19 @@ function scene:hide(event)
     local phase = event.phase
 
     if (phase == "did") then
-        -- Código aqui é executado imediatamente após a cena sair da tela
+    
     end
 end
 
 -- destroy()
 function scene:destroy(event)
     local sceneGroup = self.view
-
-    -- Libere o som ao destruir a cena
+ 
     if somBotao then
         audio.dispose(somBotao)
         somBotao = nil
     end
+   
 end
 
 -- -----------------------------------------------------------------------------------

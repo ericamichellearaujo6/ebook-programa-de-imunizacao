@@ -44,7 +44,7 @@ function scene:create(event)
     -- Função para voltar para a cena anterior 
     local function onBackTap(event)
         audio.play(somBotao)
-        composer.gotoScene("calendario-crianca", { effect = "slideRight", time = 500 })
+        composer.gotoScene("calendarioCrianca", { effect = "slideRight", time = 500 })
     end
 
 -- Adicionar botão 'Voltar'

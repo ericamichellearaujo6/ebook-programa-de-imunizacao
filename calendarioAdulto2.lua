@@ -33,10 +33,9 @@ function scene:create(event)
      local centerY = display.contentCenterY
  
      -- Adicionar imagem de fundo
-    local bg = display.newImageRect(sceneGroup,"assets/calendario-adultoEidoso2.png", 768, 1024)
+    local bg = display.newImageRect(sceneGroup,"assets/calendarioAdulto2.png", 768, 1024)
      bg.x = centerX
      bg.y = centerY 
- 
 
        -- Carregar o som do botão
        somBotao = audio.loadSound("assets/som.mp3") 
@@ -44,14 +43,14 @@ function scene:create(event)
     -- Função para voltar para a cena anterior 
     local function onBackTap(event)
         audio.play(somBotao)
-        composer.gotoScene("page2", { effect = "slideRight", time = 500 })
+        composer.gotoScene("calendarioAdulto", { effect = "slideRight", time = 500 })
     end
 
 -- Adicionar botão 'Voltar'
 local btVolt = createButton(
     sceneGroup,
     "assets/voltar.png",
-    679, 
+    670, 
     display.contentHeight - 980, 
     1.0, 
     1.0, 
@@ -75,9 +74,6 @@ function scene:hide(event)
     local sceneGroup = self.view
     local phase = event.phase
 
-    if (phase == "did") then
-        -- Código aqui é executado imediatamente após a cena sair da tela
-    end
 end
 
 -- destroy()
@@ -89,6 +85,7 @@ function scene:destroy(event)
         audio.dispose(somBotao)
         somBotao = nil
     end
+   
 end
 
 -- -----------------------------------------------------------------------------------

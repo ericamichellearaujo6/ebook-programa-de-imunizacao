@@ -5,9 +5,13 @@ local scene = composer.newScene()
 local somBotao
 local audioGestante
 local canalG
+
 local sprite
 local escudo
 local btNavegar
+local btSomL
+local btSomD
+
 local animationComplete = false
 local audioComplete = false
 
@@ -22,6 +26,99 @@ local function createButton(sceneGroup, imagePath, x, y, scaleX, scaleY, onTap)
         button:addEventListener("tap", onTap)
     end
     return button
+end
+
+-- Função para exibir o escudo e o botão de navegação
+local function showShieldAndButton(sceneGroup, centerX, centerY)
+    -- Garantir que o sprite seja removido antes de exibir o escudo
+    if sprite and sprite.removeSelf then
+        sprite:removeSelf()
+        sprite = nil
+    end
+
+    if not escudo then
+        escudo = display.newImage(sceneGroup, "assets/gotinhaGestante.png")
+        escudo.x = centerX
+        escudo.y = centerY - 50
+        escudo.xScale = 1.5
+        escudo.yScale = 1.5
+        escudo.alpha = 1
+
+        -- Tornar o botão de navegação visível
+        btNavegar.isVisible = true
+    end
+end
+
+-- Função chamada quando a animação termina
+local function onAnimationComplete(event)
+    if event.phase == "ended" then
+        animationComplete = true
+        checkConditions(sceneGroup, display.contentCenterX, display.contentCenterY)
+    end
+end
+
+-- Função para verificar as condições de exibição
+local function checkConditions(sceneGroup, centerX, centerY)
+    if animationComplete and audioComplete then
+        -- Garantir que a animação não esteja mais visível
+        if sprite and sprite.removeSelf then
+            sprite:removeSelf()
+            sprite = nil
+        end
+
+        showShieldAndButton(sceneGroup, centerX, centerY)
+    end
+end
+
+-- Função para recriar o sprite e a animação
+local function recreateAnimation(sceneGroup, centerX, centerY)
+    -- Remover sprite existente, se houver
+    if sprite and sprite.removeSelf then
+        sprite:removeSelf()
+        sprite = nil
+    end
+
+    -- Configurar o sprite sheet
+    local sheetOptions = {
+        width = 666,
+        height = 374,
+        numFrames = 4,
+        sheetContentWidth = 2664,
+        sheetContentHeight = 374
+    }
+
+    local imageSheet = graphics.newImageSheet("assets/spriteGestante.png", sheetOptions)
+
+    -- Configurar as sequências de animação
+    local sequenceData = {
+        {
+            name = "animacao",
+            start = 1,
+            count = 4,
+            time = 5000, -- Duração total da animação
+            loopCount = 4 -- Repetições
+        }
+    }
+
+    -- Função chamada quando a animação termina
+    local function onAnimationComplete(event)
+        if event.phase == "ended" then
+            animationComplete = true
+            checkConditions(sceneGroup, centerX, centerY)
+        end
+    end
+
+    -- Criar o sprite
+    sprite = display.newSprite(sceneGroup, imageSheet, sequenceData)
+    sprite.x = centerX
+    sprite.y = centerY + 2
+    sprite.xScale = 0.9
+    sprite.yScale = 0.9
+    sprite:setSequence("animacao")
+    sprite:play()
+
+    -- Adicionar o listener para detectar quando a animação terminar
+    sprite:addEventListener("sprite", onAnimationComplete)
 end
 
 -- -----------------------------------------------------------------------------------
@@ -44,106 +141,21 @@ function scene:create(event)
     somBotao = audio.loadSound("assets/som.mp3")
     audioGestante = audio.loadSound("assets/audioGestante.mp3")
 
-    -- Configurar o sprite sheet
-    local sheetOptions = {
-        width = 666,
-        height = 374,
-        numFrames = 4,
-        sheetContentWidth = 2664,
-        sheetContentHeight = 374
-    }
+    -- Criar animação
+    recreateAnimation(sceneGroup, centerX, centerY)
 
-    local imageSheet = graphics.newImageSheet("assets/spriteGestante.png", sheetOptions)
-
-    -- Configurar as sequências de animação
-    local sequenceData = {
-        {
-            name = "animacao",
-            start = 1,
-            count = 4,
-            time = 5000,  -- Duração total da animação
-            loopCount = 4 -- Apenas uma vez
-        }
-    }
-
-    -- Função para exibir a imagem no fim da animação
-    local function showShieldAndButton()
-        if not escudo then
-            escudo = display.newImage("assets/gotinhaGestante.png")
-            escudo.x = centerX
-            escudo.y = centerY - 50
-            escudo.xScale = 1.5
-            escudo.yScale = 1.5
-            escudo.alpha = 1
-
-            -- Exibir o botão "Navegar" após o escudo ser exibido
-            btNavegar.isVisible = true
-        end
-    end
-
-    local function checkConditions()
-        -- Mostrar o escudo e o botão somente após o áudio e a animação terminarem
-        if animationComplete and audioComplete then
-            showShieldAndButton()
-        end
-    end
-
-    -- Função chamada quando a animação termina
-    local function onAnimationComplete(event)
-        if event.phase == "ended" then
-            animationComplete = true
-            sprite:removeSelf()
-            checkConditions()
-        end
-    end
-
-    -- Criar o sprite
-    sprite = display.newSprite(sceneGroup, imageSheet, sequenceData)
-    sprite.x = centerX
-    sprite.y = centerY + 2
-    sprite.xScale = 0.9
-    sprite.yScale = 0.9
-    sprite:setSequence("animacao")
-    sprite:play()
-
-    -- Adicionar o listener para detectar quando a animação terminar
-    sprite:addEventListener("sprite", onAnimationComplete)
-
-    -- Reproduzir o áudio
-    canalG = audio.play(audioGestante, { onComplete = function()
-        audioComplete = true
-        checkConditions()
-    end })
-
-    -- Função para voltar para a cena anterior
+    -- Botão 'Voltar'
     local function onBackTap(event)
         -- Parar o áudio
         if canalG then
             audio.stop(canalG)
             canalG = nil
         end
-
-        -- Remover elementos da cena
-        if escudo then
-            escudo:removeSelf()
-            escudo = nil
-        end
-        if sprite then
-            sprite:removeSelf()
-            sprite = nil
-        end
-
-        -- Tocar som do botão de navegação
+        -- Tocar som do botão e navegar
         audio.play(somBotao)
         composer.gotoScene("page2", { effect = "slideRight", time = 500 })
     end
 
-    -- Função para o botão de navegação
-    local function onNavegarTap(event)
-        composer.gotoScene("calendario", { effect = "slideLeft", time = 500 })
-    end
-
-    -- Adicionar botão 'Voltar'
     local btVolt = createButton(
         sceneGroup,
         "assets/voltar.png",
@@ -155,16 +167,56 @@ function scene:create(event)
     )
 
     -- Botão de Navegação
+    local function onNavegarTap(event)
+        composer.gotoScene("calendarioGestante", { effect = "slideLeft", time = 500 })
+    end
+
     btNavegar = createButton(
         sceneGroup,
         "assets/balao.png",
         centerX,
-        centerY + 300,  -- Ajustar posição do botão
-        1.0,
-        1.0,
+        centerY + 300,
+        1.5,
+        1.5,
         onNavegarTap
     )
-    btNavegar.isVisible = false -- Começa invisível
+    btNavegar.isVisible = false
+
+    -- Botões de áudio
+    btSomL = createButton(
+        sceneGroup,
+        "assets/som-ligar.png",
+        display.contentWidth - 530,
+        display.contentHeight - 55,
+        0.5,
+        0.5,
+        function()
+            if not canalG or not audio.isChannelActive(canalG) then
+                canalG = audio.play(audioGestante)
+            end
+            btSomL.isVisible = false
+            btSomD.isVisible = true
+        end
+    )
+    btSomL.isVisible = false -- Torna o botão "ligar áudio" invisível inicialmente
+
+    btSomD = createButton(
+        sceneGroup,
+        "assets/som-desliga.png",
+        display.contentWidth - 220,
+        display.contentHeight - 55,
+        0.5,
+        0.5,
+        function()
+            if canalG then
+                audio.stop(canalG)
+                canalG = nil
+            end
+            btSomL.isVisible = true
+            btSomD.isVisible = false
+        end
+    )
+    btSomD.isVisible = true -- Torna o botão "desligar áudio" visível inicialmente
 end
 
 function scene:show(event)
@@ -172,37 +224,40 @@ function scene:show(event)
     local phase = event.phase
 
     if (phase == "did") then
-        -- Reiniciar o áudio e a animação caso a página seja revisitada
+        -- Reiniciar condições
         animationComplete = false
         audioComplete = false
         btNavegar.isVisible = false
-        if not canalG then
-            canalG = audio.play(audioGestante, { onComplete = function()
-                audioComplete = true
-                checkConditions()
-            end })
-        end
 
-        if sprite then
-            sprite:setSequence("animacao")
-            sprite:play()
-        end
+        -- Recriar animação
+        recreateAnimation(sceneGroup, display.contentCenterX, display.contentCenterY)
+
+        -- Reproduzir áudio
+        canalG = audio.play(audioGestante, {
+            onComplete = function()
+                audioComplete = true
+                checkConditions(sceneGroup, display.contentCenterX, display.contentCenterY)
+            end
+        })
     end
 end
 
 function scene:hide(event)
-    local sceneGroup = self.view
     local phase = event.phase
 
     if (phase == "did") then
-        -- Parar o áudio quando a cena for ocultada
+        -- Parar o áudio
         if canalG then
             audio.stop(canalG)
             canalG = nil
         end
 
-        -- Remover o escudo
-        if escudo then
+        -- Remover sprite e outros elementos
+        if sprite and sprite.removeSelf then
+            sprite:removeSelf()
+            sprite = nil
+        end
+        if escudo and escudo.removeSelf then
             escudo:removeSelf()
             escudo = nil
         end
@@ -210,21 +265,14 @@ function scene:hide(event)
 end
 
 function scene:destroy(event)
-    local sceneGroup = self.view
-
-    -- Liberar recursos
     if somBotao then
         audio.dispose(somBotao)
-        somBotao = nil
     end
-
     if audioGestante then
         audio.dispose(audioGestante)
-        audioGestante = nil
     end
 end
 
--- Listeners da cena
 scene:addEventListener("create", scene)
 scene:addEventListener("show", scene)
 scene:addEventListener("hide", scene)

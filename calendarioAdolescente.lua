@@ -33,7 +33,7 @@ function scene:create(event)
      local centerY = display.contentCenterY
  
      -- Adicionar imagem de fundo
-    local bg = display.newImageRect(sceneGroup,"assets/calendario-adolescente.png", 768, 1024)
+    local bg = display.newImageRect(sceneGroup,"assets/calendarioAdolescente.png", 768, 1024)
      bg.x = centerX
      bg.y = centerY 
 
@@ -74,36 +74,20 @@ function scene:hide(event)
     local sceneGroup = self.view
     local phase = event.phase
 
-    if (phase == "did") then
-        if escudo then
-            escudo:removeSelf()
-            escudo = nil  -- Garantir que o objeto seja removido da memória
-        end
-    end
 end
 
 -- destroy()
 function scene:destroy(event)
     local sceneGroup = self.view
    -- Remove o escudo se ele existir
-   if escudo then
-    escudo:removeSelf()
-    escudo = nil  -- Garantir que o objeto seja removido da memória
- end
+  
     -- Libere o som ao destruir a cena
     if somBotao then
         audio.dispose(somBotao)
         somBotao = nil
     end
 
-    if audioGestante then
-        if canalG then
-            audio.stop(canalG)
-            canalG = nil
-        end
-        audio.dispose(audioGestante)
-        audioGestante = nil
-    end
+
    
 end
 

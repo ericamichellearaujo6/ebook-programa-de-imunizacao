@@ -47,8 +47,8 @@ function scene:create(event)
     img.x = display.contentCenterX - 10
     img.y = display.contentCenterY + 250
 
-    -- Adicionar os ícones, alinhados horizontalmente
-    local espacoIcone = 100  -- Definir o espaçamento entre os ícones
+    -- Adicionar os ícones
+    local espacoIcone = 100  -- Define o espaçamento entre os ícones
 
     -- Posições X ajustadas para os ícones ficarem ao lado do outro
     local icon1 = createButton(sceneGroup, "assets/bebe.png", centerX - 3 * espacoIcone, centerY - 10, 0.8, 0.8)
@@ -129,7 +129,7 @@ function scene:create(event)
     end)
     icon3:addEventListener("tap", function()
         audio.play(btSom)
-        moveToUBSAndNavigate(icon3, "calendario-adultoEidoso", { x = centerX + espacoIcone, y = centerY - 10 }) -- Cena para o botão adulto e idoso
+        moveToUBSAndNavigate(icon3, "calendario-adulto", { x = centerX + espacoIcone, y = centerY - 10 }) -- Cena para o botão adulto e idoso
     end)
     icon4:addEventListener("tap", function()
         audio.play(btSom)

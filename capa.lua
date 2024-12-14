@@ -150,7 +150,7 @@ function scene:destroy(event)
         audio.dispose(audioCapa)
         audioCapa = nil
     end
-
+    
     -- Libere o som ao destruir a cena
     if btSom then
         audio.dispose(btSom)

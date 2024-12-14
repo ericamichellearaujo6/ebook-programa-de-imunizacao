@@ -3,8 +3,8 @@ local scene = composer.newScene()
 
 -- Variáveis locais para a cena
 local somBotao
-local audioAdolescente
-local canalD
+local audioAdulto
+local canalA
 
 local sprite
 local escudo
@@ -37,9 +37,9 @@ local function showShieldAndButton(sceneGroup, centerX, centerY)
     end
 
     if not escudo then
-        escudo = display.newImage(sceneGroup, "assets/gotinhaAdolescente.png")
+        escudo = display.newImage(sceneGroup, "assets/gotinhaAdulto.png")
         escudo.x = centerX
-        escudo.y = centerY - 50
+        escudo.y = centerY + 100
         escudo.xScale = 1.5
         escudo.yScale = 1.5
         escudo.alpha = 1
@@ -82,19 +82,19 @@ local function recreateAnimation(sceneGroup, centerX, centerY)
     local sheetOptions = {
         width = 666,
         height = 374,
-        numFrames = 4,
-        sheetContentWidth = 2664,
+        numFrames = 6,
+        sheetContentWidth = 3996,
         sheetContentHeight = 374
     }
 
-    local imageSheet = graphics.newImageSheet("assets/spriteAdolescente.png", sheetOptions)
+    local imageSheet = graphics.newImageSheet("assets/spriteAdulto.png", sheetOptions)
 
     -- Configurar as sequências de animação
     local sequenceData = {
         {
             name = "animacao",
             start = 1,
-            count = 4,
+            count = 6,
             time = 5000, -- Duração total da animação
             loopCount = 4 -- Repetições
         }
@@ -133,13 +133,13 @@ function scene:create(event)
     local centerY = display.contentCenterY
 
     -- Adicionar imagem de fundo
-    local bg = display.newImageRect(sceneGroup, "assets/calendario-adolescente.png", 768, 1024)
+    local bg = display.newImageRect(sceneGroup, "assets/calendarioAdult.png", 768, 1024)
     bg.x = centerX
     bg.y = centerY
 
     -- Carregar o som do botão e da cena
     somBotao = audio.loadSound("assets/som.mp3")
-    audioAdolescente = audio.loadSound("assets/audioAdolescente.mp3")
+    audioAdulto = audio.loadSound("assets/audioAdulto.mp3")
 
     -- Criar animação
     recreateAnimation(sceneGroup, centerX, centerY)
@@ -147,9 +147,9 @@ function scene:create(event)
     -- Botão 'Voltar'
     local function onBackTap(event)
         -- Parar o áudio
-        if canalD then
-            audio.stop(canalD)
-            canalD = nil
+        if canalA then
+            audio.stop(canalA)
+            canalA = nil
         end
         -- Tocar som do botão e navegar
         audio.play(somBotao)
@@ -168,7 +168,7 @@ function scene:create(event)
 
     -- Botão de Navegação
     local function onNavegarTap(event)
-        composer.gotoScene("calendarioAdolescente", { effect = "slideLeft", time = 500 })
+        composer.gotoScene("calendarioAdulto", { effect = "slideLeft", time = 500 })
     end
 
     btNavegar = createButton(
@@ -191,8 +191,8 @@ function scene:create(event)
         0.5,
         0.5,
         function()
-            if not canalD or not audio.isChannelActive(canalD) then
-                canalD = audio.play(audioAdolescente)
+            if not canalA or not audio.isChannelActive(canalA) then
+                canalA = audio.play(audioAdulto)
             end
             btSomL.isVisible = false
             btSomD.isVisible = true
@@ -208,9 +208,9 @@ function scene:create(event)
         0.5,
         0.5,
         function()
-            if canalD then
-                audio.stop(canalD)
-                canalD = nil
+            if canalA then
+                audio.stop(canalA)
+                canalA = nil
             end
             btSomL.isVisible = true
             btSomD.isVisible = false
@@ -233,7 +233,7 @@ function scene:show(event)
         recreateAnimation(sceneGroup, display.contentCenterX, display.contentCenterY)
 
         -- Reproduzir áudio
-        canalD = audio.play(audioAdolescente, {
+        canalA = audio.play(audioAdulto, {
             onComplete = function()
                 audioComplete = true
                 checkConditions(sceneGroup, display.contentCenterX, display.contentCenterY)
@@ -247,9 +247,9 @@ function scene:hide(event)
 
     if (phase == "did") then
         -- Parar o áudio
-        if canalD then
-            audio.stop(canalD)
-            canalD = nil
+        if canalA then
+            audio.stop(canalA)
+            canalA = nil
         end
 
         -- Remover sprite e outros elementos
@@ -268,8 +268,8 @@ function scene:destroy(event)
     if somBotao then
         audio.dispose(somBotao)
     end
-    if audioAdolescente then
-        audio.dispose(audioAdolescente)
+    if audioAdulto then
+        audio.dispose(audioAdulto)
     end
 end
 
