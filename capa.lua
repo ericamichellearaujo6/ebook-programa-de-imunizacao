@@ -6,7 +6,7 @@ local scene = composer.newScene()
 
 local btSom
 local audioCapa
-local canalAudio
+local canalCapa
 local btSomL
 local btSomD
 
@@ -53,9 +53,9 @@ function scene:create(event)
     -- Função para navegar para a próxima pagina
     local function onNextTap(event)
 
-        if canalAudio then 
-            audio.stop(canalAudio)
-            canalAudio = nil
+        if canalCapa then 
+            audio.stop(canalCapa)
+            canalCapa = nil
         end  
         audio.play(btSom)
         composer.gotoScene("page1", { effect = "fade", time = 800 })
@@ -63,8 +63,8 @@ function scene:create(event)
 
     --função para ligar o som
     local function onSoundOnTap(event)
-        if not canalAudio then
-            canalAudio = audio.play(somCapa, { loops = -1 }) -- Reproduz o som em loop
+        if not canalCapa then
+            canalCapa = audio.play(somCapa, { loops = -1 }) -- Reproduz o som em loop
         end
         btSomL.isVisible = false 
         btSomD.isVisible = true 
@@ -72,9 +72,9 @@ function scene:create(event)
     
     --função para desligar o som
     local function onSoundOffTap(event)
-        if canalAudio then
-            audio.stop(canalAudio) 
-            canalAudio = nil
+        if canalCapa then
+            audio.stop(canalCapa) 
+            canalCapa = nil
         end
         btSomD.isVisible = false 
         btSomL.isVisible = true 
@@ -122,8 +122,8 @@ function scene:show(event)
 
     if (phase == "did") then
       
-        if not canalAudio then
-        canalAudio = audio.play(audioCapa, { loops = -1 }) 
+        if not canalCapa then
+        canalCapa = audio.play(audioCapa, { loops = -1 }) 
         end  
     end
 end
@@ -135,9 +135,9 @@ function scene:hide(event)
 
     if (phase == "did") then
 
-        if canalAudio then
-            audio.stop(canalAudio)
-            canalAudio = nil
+        if canalCapa then
+            audio.stop(canalCapa)
+            canalCapa = nil
         end
     end
 end
